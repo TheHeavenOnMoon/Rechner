@@ -3,96 +3,97 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Betriebliche Altersvorsorge Rechner</title>
+<title>Altersvorsorge Rechner</title>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.js"></script>
 <style>
-  *{box-sizing:border-box;margin:0;padding:0}
+*{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --bg:#f5f5f3;--surface:#fff;--surface2:#f0efea;
+  --text:#1a1a1a;--text2:#666;--text3:#999;
+  --border:#e0dfd8;--border2:#ccc;
+  --accent:#534AB7;--accent-light:#EEEDFE;
+  --green:#0F6E56;--green-light:#E1F5EE;
+  --blue:#185FA5;--blue-light:#E6F1FB;
+  --amber:#BA7517;--amber-light:#FAEEDA;
+  --red:#A32D2D;--red-light:#FCEBEB;
+  --radius:10px;--radius-sm:6px;
+  --shadow:0 1px 4px rgba(0,0,0,0.08);
+}
+@media(prefers-color-scheme:dark){
   :root{
-    --bg:#f5f5f3;--surface:#fff;--surface2:#f0efea;
-    --text:#1a1a1a;--text2:#666;--text3:#999;
-    --border:#e0dfd8;--border2:#ccc;
-    --accent:#534AB7;--accent-light:#EEEDFE;
-    --green:#0F6E56;--green-light:#E1F5EE;
-    --blue:#185FA5;--blue-light:#E6F1FB;
-    --amber:#BA7517;--amber-light:#FAEEDA;
-    --radius:10px;--radius-sm:6px;
-    --shadow:0 1px 4px rgba(0,0,0,0.08);
+    --bg:#18181b;--surface:#232326;--surface2:#2c2c30;
+    --text:#f0f0ee;--text2:#aaa;--text3:#666;
+    --border:#333;--border2:#444;
+    --accent:#AFA9EC;--accent-light:#26215C;
+    --green:#5DCAA5;--green-light:#04342C;
+    --blue:#85B7EB;--blue-light:#042C53;
+    --amber:#EF9F27;--amber-light:#412402;
+    --red:#F09595;--red-light:#501313;
   }
-  @media(prefers-color-scheme:dark){
-    :root{
-      --bg:#18181b;--surface:#232326;--surface2:#2c2c30;
-      --text:#f0f0ee;--text2:#aaa;--text3:#666;
-      --border:#333;--border2:#444;
-      --accent:#AFA9EC;--accent-light:#26215C;
-      --green:#5DCAA5;--green-light:#04342C;
-      --blue:#85B7EB;--blue-light:#042C53;
-      --amber:#EF9F27;--amber-light:#412402;
-    }
-  }
-  body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;background:var(--bg);color:var(--text);min-height:100vh;font-size:15px;line-height:1.6}
-  header{background:var(--surface);border-bottom:1px solid var(--border);padding:18px 32px;display:flex;align-items:center;gap:12px}
-  header h1{font-size:20px;font-weight:500}
-  header span.badge{font-size:13px;color:var(--accent);background:var(--accent-light);padding:3px 10px;border-radius:20px;margin-left:auto}
-  .layout{display:grid;grid-template-columns:340px 1fr;min-height:calc(100vh - 61px)}
-  .sidebar{background:var(--surface);border-right:1px solid var(--border);padding:24px;overflow-y:auto}
-  .main{padding:24px;overflow-y:auto}
-  .section{margin-bottom:24px}
-  .section-label{font-size:11px;font-weight:500;letter-spacing:.06em;text-transform:uppercase;color:var(--text3);margin-bottom:12px;padding-bottom:8px;border-bottom:1px solid var(--border)}
-  .field{margin-bottom:14px}
-  .field label{display:block;font-size:13px;color:var(--text2);margin-bottom:5px}
-  .field input[type=number],.field select{width:100%;padding:8px 12px;border:1px solid var(--border2);border-radius:var(--radius-sm);background:var(--surface);color:var(--text);font-size:14px;outline:none;transition:border .15s}
-  .field input[type=number]:focus,.field select:focus{border-color:var(--accent)}
-  .field-row{display:grid;grid-template-columns:1fr 1fr;gap:10px}
-  .slider-field{margin-bottom:14px}
-  .slider-field .slider-head{display:flex;justify-content:space-between;align-items:center;margin-bottom:5px}
-  .slider-field .slider-head label{font-size:13px;color:var(--text2)}
-  .slider-field .slider-head span{font-size:14px;font-weight:500;color:var(--accent)}
-  input[type=range]{width:100%;accent-color:var(--accent);height:4px}
-  .hint{font-size:12px;color:var(--text3);margin-top:-8px;margin-bottom:14px}
-  .toggle-row{display:flex;align-items:center;justify-content:space-between;margin-bottom:14px}
-  .toggle-row label{font-size:13px;color:var(--text2)}
-  .toggle{position:relative;width:36px;height:20px;flex-shrink:0}
-  .toggle input{opacity:0;width:0;height:0}
-  .toggle-slider{position:absolute;inset:0;background:var(--border2);border-radius:20px;cursor:pointer;transition:.2s}
-  .toggle-slider:before{content:'';position:absolute;width:14px;height:14px;left:3px;top:3px;background:#fff;border-radius:50%;transition:.2s}
-  .toggle input:checked+.toggle-slider{background:var(--accent)}
-  .toggle input:checked+.toggle-slider:before{transform:translateX(16px)}
-  .readonly-input{background:var(--surface2)!important;color:var(--text2)!important}
-  .metrics{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin-bottom:24px}
-  .metric{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);padding:16px}
-  .metric-label{font-size:11px;color:var(--text3);margin-bottom:4px;text-transform:uppercase;letter-spacing:.05em}
-  .metric-val{font-size:20px;font-weight:500;color:var(--text)}
-  .metric-sub{font-size:12px;color:var(--text3);margin-top:2px}
-  .metric.highlight{border-color:var(--accent);background:var(--accent-light)}
-  .metric.highlight .metric-val{color:var(--accent)}
-  .metric.green{border-color:var(--green);background:var(--green-light)}
-  .metric.green .metric-val{color:var(--green)}
-  .card{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);padding:20px;margin-bottom:20px}
-  .card-title{font-size:14px;font-weight:500;margin-bottom:16px}
-  .chart-wrap{position:relative;width:100%;height:300px}
-  .legend{display:flex;flex-wrap:wrap;gap:12px;margin-top:14px;font-size:12px;color:var(--text2)}
-  .legend span{display:flex;align-items:center;gap:5px}
-  .legend-dot{width:10px;height:10px;border-radius:2px;display:inline-block;flex-shrink:0}
-  .tabs{display:flex;gap:4px;margin-bottom:20px;background:var(--surface2);border-radius:var(--radius-sm);padding:4px}
-  .tab{flex:1;padding:7px 8px;border:none;background:none;border-radius:4px;font-size:13px;color:var(--text2);cursor:pointer;transition:all .15s;white-space:nowrap}
-  .tab.active{background:var(--surface);color:var(--text);box-shadow:var(--shadow)}
-  .table-wrap{overflow-x:auto}
-  table{width:100%;border-collapse:collapse;font-size:13px}
-  th{text-align:left;padding:8px 12px;color:var(--text3);font-weight:500;border-bottom:1px solid var(--border);font-size:11px;text-transform:uppercase;letter-spacing:.05em}
-  td{padding:9px 12px;border-bottom:1px solid var(--border);color:var(--text)}
-  tr:last-child td{border-bottom:none}
-  tr:hover td{background:var(--surface2)}
-  .pill{display:inline-block;padding:2px 8px;border-radius:20px;font-size:11px;font-weight:500}
-  .pill-green{background:var(--green-light);color:var(--green)}
-  .pill-blue{background:var(--blue-light);color:var(--blue)}
-  .steuer-result-row{display:flex;justify-content:space-between;align-items:center;padding:8px 0;border-bottom:1px solid var(--border);font-size:14px}
-  .steuer-result-row:last-child{border-bottom:none;font-weight:500;font-size:15px;padding-top:12px}
-  .steuer-result-row.total span:last-child{color:var(--accent);font-size:16px}
-  @media(max-width:768px){
-    .layout{grid-template-columns:1fr}
-    .sidebar{border-right:none;border-bottom:1px solid var(--border)}
-    .metrics{grid-template-columns:1fr 1fr}
-  }
+}
+body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;background:var(--bg);color:var(--text);min-height:100vh;font-size:15px;line-height:1.6}
+header{background:var(--surface);border-bottom:1px solid var(--border);padding:16px 24px;display:flex;align-items:center;gap:12px;flex-wrap:wrap}
+header h1{font-size:19px;font-weight:500}
+.badge{font-size:13px;color:var(--accent);background:var(--accent-light);padding:3px 10px;border-radius:20px}
+.page-tabs{display:flex;gap:4px;background:var(--surface2);border-radius:var(--radius-sm);padding:4px;margin-left:auto}
+.page-tab{padding:7px 16px;border:none;background:none;border-radius:4px;font-size:13px;color:var(--text2);cursor:pointer;transition:all .15s;white-space:nowrap}
+.page-tab.active{background:var(--surface);color:var(--text);box-shadow:var(--shadow)}
+.sidebar{background:var(--surface);border-right:1px solid var(--border);padding:24px;overflow-y:auto}
+.main{padding:24px;overflow-y:auto}
+.section{margin-bottom:24px}
+.section-label{font-size:11px;font-weight:500;letter-spacing:.06em;text-transform:uppercase;color:var(--text3);margin-bottom:12px;padding-bottom:8px;border-bottom:1px solid var(--border)}
+.field{margin-bottom:14px}
+.field label{display:block;font-size:13px;color:var(--text2);margin-bottom:5px}
+.field input[type=number],.field input[type=text],.field select{width:100%;padding:8px 12px;border:1px solid var(--border2);border-radius:var(--radius-sm);background:var(--surface);color:var(--text);font-size:14px;outline:none;transition:border .15s}
+.field input:focus,.field select:focus{border-color:var(--accent)}
+.field-row{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.slider-wrap{margin-bottom:14px}
+.slider-head{display:flex;justify-content:space-between;align-items:center;margin-bottom:5px}
+.slider-head label{font-size:13px;color:var(--text2)}
+.slider-head span{font-size:14px;font-weight:500;color:var(--accent)}
+input[type=range]{width:100%;accent-color:var(--accent);height:4px}
+.hint{font-size:12px;color:var(--text3);margin-top:-6px;margin-bottom:14px}
+.toggle-row{display:flex;align-items:center;justify-content:space-between;margin-bottom:14px}
+.toggle-row label.lbl{font-size:13px;color:var(--text2)}
+.toggle{position:relative;width:36px;height:20px;flex-shrink:0}
+.toggle input{opacity:0;width:0;height:0}
+.tog-sl{position:absolute;inset:0;background:var(--border2);border-radius:20px;cursor:pointer;transition:.2s}
+.tog-sl:before{content:'';position:absolute;width:14px;height:14px;left:3px;top:3px;background:#fff;border-radius:50%;transition:.2s}
+.toggle input:checked+.tog-sl{background:var(--accent)}
+.toggle input:checked+.tog-sl:before{transform:translateX(16px)}
+.ro{background:var(--surface2)!important;color:var(--text2)!important}
+.metrics{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin-bottom:24px}
+.metric{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);padding:16px}
+.metric-label{font-size:11px;color:var(--text3);margin-bottom:4px;text-transform:uppercase;letter-spacing:.05em}
+.metric-val{font-size:20px;font-weight:500}
+.metric-sub{font-size:12px;color:var(--text3);margin-top:2px}
+.hl{border-color:var(--accent)!important;background:var(--accent-light)!important}.hl .metric-val{color:var(--accent)}
+.gr{border-color:var(--green)!important;background:var(--green-light)!important}.gr .metric-val{color:var(--green)}
+.rd{border-color:var(--red)!important;background:var(--red-light)!important}.rd .metric-val{color:var(--red)}
+.card{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);padding:20px;margin-bottom:20px}
+.card-title{font-size:14px;font-weight:500;margin-bottom:16px}
+.chart-wrap{position:relative;width:100%;height:300px}
+.legend{display:flex;flex-wrap:wrap;gap:12px;margin-top:14px;font-size:12px;color:var(--text2)}
+.legend span{display:flex;align-items:center;gap:5px}
+.ldot{width:10px;height:10px;border-radius:2px;display:inline-block;flex-shrink:0}
+.tabs{display:flex;gap:4px;margin-bottom:20px;background:var(--surface2);border-radius:var(--radius-sm);padding:4px}
+.tab{flex:1;padding:7px 8px;border:none;background:none;border-radius:4px;font-size:13px;color:var(--text2);cursor:pointer;transition:all .15s}
+.tab.active{background:var(--surface);color:var(--text);box-shadow:var(--shadow)}
+.table-wrap{overflow-x:auto}
+table{width:100%;border-collapse:collapse;font-size:13px}
+th{text-align:left;padding:8px 12px;color:var(--text3);font-weight:500;border-bottom:1px solid var(--border);font-size:11px;text-transform:uppercase;letter-spacing:.05em}
+td{padding:9px 12px;border-bottom:1px solid var(--border)}
+tr:last-child td{border-bottom:none}
+tr:hover td{background:var(--surface2)}
+.pill{display:inline-block;padding:2px 8px;border-radius:20px;font-size:11px;font-weight:500}
+.pg{background:var(--green-light);color:var(--green)}
+.pb{background:var(--blue-light);color:var(--blue)}
+.pr{background:var(--red-light);color:var(--red)}
+.sr-row{display:flex;justify-content:space-between;align-items:center;padding:8px 0;border-bottom:1px solid var(--border);font-size:14px}
+.sr-row:last-child{border-bottom:none;font-weight:500;font-size:15px;padding-top:12px}
+.sr-row.tot span:last-child{color:var(--accent);font-size:16px}
+.mode-btn{padding:6px 14px;border:1px solid var(--border2);border-radius:var(--radius-sm);background:none;color:var(--text2);font-size:13px;cursor:pointer;transition:all .15s}
+.mode-btn.active{background:var(--accent-light);border-color:var(--accent);color:var(--accent)}
 </style>
 </head>
 <body>
@@ -100,87 +101,90 @@
 <header>
   <svg width="22" height="22" viewBox="0 0 22 22" fill="none"><rect x="2" y="12" width="4" height="8" rx="1.5" fill="var(--accent)"/><rect x="9" y="8" width="4" height="12" rx="1.5" fill="var(--green)"/><rect x="16" y="3" width="4" height="17" rx="1.5" fill="var(--amber)"/></svg>
   <div>
-    <h1>Betriebliche Altersvorsorge Rechner</h1>
-    <div style="font-size:12px;color:var(--text3);margin-top:2px">
-      Investmentfonds: <strong style="color:var(--text2)">Allianz Best Styles Global Equity SRI WT EUR</strong>
+    <h1>Altersvorsorge Rechner</h1>
+    <div id="bav-fonds-info" style="font-size:12px;color:var(--text3);margin-top:2px">
+      BAV-Fonds: <strong style="color:var(--text2)">Allianz Best Styles Global Equity SRI WT EUR</strong>
       <span style="margin:0 6px">·</span>WKN <span style="color:var(--text2)">A2PN85</span>
       <span style="margin:0 6px">·</span>ISIN <span style="color:var(--text2)">LU2034156138</span>
-      <span style="margin:0 6px">·</span>Globale Aktien, SRI/ESG-Strategie
     </div>
+  </div>
+  <div class="page-tabs">
+    <button class="page-tab active" id="pt-bav" onclick="switchPage('bav')">Betriebliche AV</button>
+    <button class="page-tab" id="pt-depot" onclick="switchPage('depot')">Privates ETF-Depot</button>
   </div>
   <span class="badge">Beta</span>
 </header>
 
-<div class="layout">
+<!-- ══════════════ BAV ══════════════ -->
+<div id="page-bav" style="display:grid;grid-template-columns:340px 1fr;min-height:calc(100vh - 65px)">
   <aside class="sidebar">
     <div class="section">
       <div class="section-label">Grundparameter</div>
-      <div class="field">
-        <label>Startkapital (€)</label>
-        <input type="number" id="startkapital" value="0" min="0" step="500">
-      </div>
-      <div class="slider-field">
+      <div class="field"><label>Startkapital (€)</label><input type="number" id="startkapital" value="0" min="0" step="500"></div>
+      <div class="slider-wrap">
         <div class="slider-head"><label>Anlagedauer</label><span id="laufzeit-out">38 Jahre</span></div>
         <input type="range" id="laufzeit" min="1" max="50" value="38" step="1">
       </div>
-      <div class="slider-field">
+      <div class="slider-wrap">
         <div class="slider-head"><label>Ø Rendite p.a.</label><span id="rendite-out">5,0 %</span></div>
-        <input type="range" id="rendite" min="1" max="15" value="5" step="0.5">
+        <input type="range" id="rendite" min="-10" max="15" value="5" step="0.5">
       </div>
     </div>
-
     <div class="section">
       <div class="section-label">Eigene Beiträge</div>
       <div class="field-row">
-        <div class="field">
-          <label>Monatlich (€)</label>
-          <input type="number" id="monatsrate" value="100" min="0" step="50">
-        </div>
-        <div class="field">
-          <label>Sonderzahlung / Jahr (€)</label>
-          <input type="number" id="sonderzahlung" value="0" min="0" step="100">
-        </div>
+        <div class="field"><label>Monatlich (€)</label><input type="number" id="monatsrate" value="100" min="0" step="50"></div>
+        <div class="field"><label>Sonderzahlung / Jahr (€)</label><input type="number" id="sonderzahlung" value="0" min="0" step="100"></div>
       </div>
-      <div class="toggle-row" style="margin-top:-4px">
-        <label>Entgeltumwandlung (vom Brutto)</label>
-        <label class="toggle"><input type="checkbox" id="entgelt" checked><span class="toggle-slider"></span></label>
+      <div class="toggle-row">
+        <label class="lbl">Entgeltumwandlung (vom Brutto)</label>
+        <label class="toggle"><input type="checkbox" id="entgelt" checked><span class="tog-sl"></span></label>
       </div>
-      <div class="hint">Beitrag wird vom Brutto abgezogen → Steuer- & SV-Ersparnis wird berechnet</div>
+      <div class="hint">Beitrag vom Brutto → Steuer- & SV-Ersparnis wird berechnet</div>
     </div>
-
     <div class="section">
       <div class="section-label">Arbeitgeber</div>
       <div class="field-row">
-        <div class="field">
-          <label>Monatlich (€) <span style="font-size:11px;color:var(--text3)">(30% auto)</span></label>
-          <input type="number" id="ag-monat" value="30" min="0" step="10" class="readonly-input" readonly>
-        </div>
-        <div class="field">
-          <label>Sonderzahlung / Jahr (€)</label>
-          <input type="number" id="ag-jahr" value="600" min="0" step="100">
-        </div>
+        <div class="field"><label>Monatlich (€) <span style="font-size:11px;color:var(--text3)">(30% auto)</span></label><input type="number" id="ag-monat" value="30" min="0" step="10" class="ro" readonly></div>
+        <div class="field"><label>Sonderzahlung / Jahr (€)</label><input type="number" id="ag-jahr" value="600" min="0" step="100"></div>
       </div>
     </div>
-
     <div class="section">
       <div class="section-label">Vermögenswirksame Leistungen</div>
-      <div class="field">
-        <label>Arbeitgeber monatlich (€)</label>
-        <input type="number" id="vwl-ag" value="27" min="0" step="5">
-      </div>
+      <div class="field"><label>Arbeitgeber monatlich (€)</label><input type="number" id="vwl-ag" value="27" min="0" step="5"></div>
       <div style="background:var(--surface2);border-radius:var(--radius-sm);padding:10px 12px;font-size:13px;display:flex;justify-content:space-between;align-items:center">
         <span style="color:var(--text2)">Steuerl. Mehrkosten (auto)</span>
         <span id="vwl-an-display" style="font-weight:500;color:var(--accent)">– €</span>
       </div>
       <input type="hidden" id="vwl-an" value="14">
-      <div class="hint" style="margin-top:6px">Mehrkosten = VWL-AG × Grenzsteuersatz aus Steuerprofil</div>
+      <div class="hint" style="margin-top:6px">Mehrkosten = VWL-AG × Grenzsteuersatz</div>
+    </div>
+    <div class="section">
+      <div class="section-label">Auszahlungsphase</div>
+      <div style="display:flex;gap:8px;margin-bottom:14px">
+        <button class="mode-btn active" id="bav-mode-laufzeit" onclick="setBavMode('laufzeit')">Feste Laufzeit</button>
+        <button class="mode-btn" id="bav-mode-entnahme" onclick="setBavMode('entnahme')">Feste Entnahme</button>
+      </div>
+      <div id="bav-az-laufzeit">
+        <div class="slider-wrap">
+          <div class="slider-head"><label>Entnahmedauer</label><span id="bav-az-jahre-out">20 Jahre</span></div>
+          <input type="range" id="bav-az-jahre" min="1" max="40" value="20" step="1">
+        </div>
+      </div>
+      <div id="bav-az-entnahme" style="display:none">
+        <div class="field"><label>Monatliche Entnahme (€)</label><input type="number" id="bav-az-betrag" value="500" min="0" step="50"></div>
+      </div>
+      <div class="slider-wrap">
+        <div class="slider-head"><label>Rendite in Auszahlungsphase</label><span id="bav-az-rendite-out">3,0 %</span></div>
+        <input type="range" id="bav-az-rendite" min="-5" max="10" value="3" step="0.5">
+      </div>
     </div>
   </aside>
 
   <main class="main">
     <div class="metrics">
-      <div class="metric highlight">
-        <div class="metric-label">Endvermögen gesamt</div>
+      <div class="metric hl">
+        <div class="metric-label">Endvermögen Ansparphase</div>
         <div class="metric-val" id="m-end">–</div>
         <div class="metric-sub" id="m-faktor">–</div>
       </div>
@@ -204,14 +208,15 @@
         <div class="metric-val" id="m-kosten">–</div>
         <div class="metric-sub" id="m-kosten-sub">–</div>
       </div>
-      <div class="metric green">
+      <div class="metric gr">
         <div class="metric-label">Grenzsteuersatz</div>
         <div class="metric-val" id="m-grenz">–</div>
         <div class="metric-sub" id="m-grenz-sub">–</div>
       </div>
     </div>
 
-    <div class="card" style="margin-bottom:20px">
+    <!-- Gegenüberstellung -->
+    <div class="card">
       <div class="card-title">Monatliche Gegenüberstellung</div>
       <div style="display:grid;grid-template-columns:1fr 1fr;gap:0">
         <div style="padding:16px;border-right:1px solid var(--border)">
@@ -236,72 +241,92 @@
     </div>
 
     <div class="tabs">
-      <button class="tab active" onclick="switchTab('chart',this)">Wachstum</button>
-      <button class="tab" onclick="switchTab('split',this)">Aufteilung</button>
-      <button class="tab" onclick="switchTab('table',this)">Jahrestabelle</button>
-      <button class="tab" onclick="switchTab('steuer',this)">Steuerprofil</button>
+      <button class="tab active" onclick="switchTab('bav','chart',this)">Wachstum</button>
+      <button class="tab" onclick="switchTab('bav','split',this)">Aufteilung</button>
+      <button class="tab" onclick="switchTab('bav','auszahlung',this)">Auszahlungsphase</button>
+      <button class="tab" onclick="switchTab('bav','table',this)">Jahrestabelle</button>
+      <button class="tab" onclick="switchTab('bav','steuer',this)">Steuerprofil</button>
     </div>
 
-    <div id="tab-chart">
+    <div id="bav-tab-chart">
       <div class="card">
-        <div class="card-title">Vermögensentwicklung über die Zeit</div>
-        <div class="chart-wrap"><canvas id="chartGrowth" role="img" aria-label="Vermögensentwicklung"></canvas></div>
+        <div class="card-title">Vermögensentwicklung Ansparphase</div>
+        <div class="chart-wrap"><canvas id="chartGrowth"></canvas></div>
         <div class="legend" id="legend-growth"></div>
       </div>
     </div>
 
-    <div id="tab-split" style="display:none">
+    <div id="bav-tab-split" style="display:none">
       <div class="card">
         <div class="card-title">Zusammensetzung des Endvermögens</div>
         <div style="display:grid;grid-template-columns:1fr 1fr;gap:20px;align-items:center">
-          <div class="chart-wrap" style="height:260px"><canvas id="chartDoughnut" role="img" aria-label="Endvermögenszusammensetzung"></canvas></div>
+          <div class="chart-wrap" style="height:260px"><canvas id="chartDoughnut"></canvas></div>
           <div id="split-details"></div>
         </div>
       </div>
     </div>
 
-    <div id="tab-table" style="display:none">
+    <div id="bav-tab-auszahlung" style="display:none">
+      <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin-bottom:20px">
+        <div class="metric hl">
+          <div class="metric-label">Startkapital Auszahlung</div>
+          <div class="metric-val" id="bav-az-startkapital">–</div>
+          <div class="metric-sub">= Endvermögen Ansparphase</div>
+        </div>
+        <div class="metric gr" id="bav-az-metric-main">
+          <div class="metric-label" id="bav-az-metric-label">Monatliche Entnahme</div>
+          <div class="metric-val" id="bav-az-metric-val">–</div>
+          <div class="metric-sub" id="bav-az-metric-sub">–</div>
+        </div>
+        <div class="metric" id="bav-az-metric-rest">
+          <div class="metric-label" id="bav-az-rest-label">Restkapital nach Laufzeit</div>
+          <div class="metric-val" id="bav-az-rest-val">–</div>
+          <div class="metric-sub" id="bav-az-rest-sub">–</div>
+        </div>
+      </div>
       <div class="card">
-        <div class="card-title">Jahresübersicht</div>
+        <div class="card-title">Kapitalverlauf Auszahlungsphase</div>
+        <div class="chart-wrap"><canvas id="bav-az-chart"></canvas></div>
+      </div>
+      <div class="card">
+        <div class="card-title">Jahresübersicht Auszahlung</div>
         <div class="table-wrap">
           <table>
-            <thead>
-              <tr>
-                <th>Jahr</th>
-                <th>Endvermögen</th>
-                <th>Eingezahlt (eigen)</th>
-                <th>AG + VWL</th>
-                <th>Zinsgewinne</th>
-                <th>Rendite auf Einzahlung</th>
-                <th>Nettobelastung / Jahr</th>
-              </tr>
-            </thead>
+            <thead><tr><th>Jahr</th><th>Kapital Anfang</th><th>Entnahmen / Jahr</th><th>Zinsen / Jahr</th><th>Kapital Ende</th></tr></thead>
+            <tbody id="bav-az-table"></tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+
+    <div id="bav-tab-table" style="display:none">
+      <div class="card">
+        <div class="card-title">Jahresübersicht Ansparphase</div>
+        <div class="table-wrap">
+          <table>
+            <thead><tr><th>Jahr</th><th>Endvermögen</th><th>Eingezahlt (eigen)</th><th>AG + VWL</th><th>Zinsgewinne</th><th>Rendite</th><th>Nettobelastung / Jahr</th></tr></thead>
             <tbody id="table-body"></tbody>
           </table>
         </div>
       </div>
     </div>
 
-    <div id="tab-steuer" style="display:none">
-      <div style="background:var(--blue-light);border:1px solid var(--blue);border-radius:var(--radius-sm);padding:12px 14px;font-size:13px;margin-bottom:20px;line-height:1.5" id="steuer-infobox">
-        Gib dein Steuerprofil ein – der Grenzsteuersatz wird automatisch berechnet und für die VWL-Mehrkosten verwendet.
-      </div>
+    <div id="bav-tab-steuer" style="display:none">
+      <div style="background:var(--blue-light);border:1px solid var(--blue);border-radius:var(--radius-sm);padding:12px 14px;font-size:13px;margin-bottom:20px;line-height:1.5" id="steuer-infobox">Gib dein Steuerprofil ein.</div>
       <div class="card">
         <div class="card-title">Persönliche Angaben</div>
         <div style="display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-bottom:20px">
-          <div class="field">
-            <label>Steuerklasse</label>
+          <div class="field"><label>Steuerklasse</label>
             <select id="st-klasse">
               <option value="1">Klasse I – ledig / geschieden</option>
               <option value="2">Klasse II – alleinerziehend</option>
               <option value="3">Klasse III – verheiratet (Hauptverdiener)</option>
-              <option value="4">Klasse IV – verheiratet (gleiches Einkommen)</option>
+              <option value="4">Klasse IV – verheiratet</option>
               <option value="5">Klasse V – verheiratet (Geringverdiener)</option>
               <option value="6">Klasse VI – Nebenjob</option>
             </select>
           </div>
-          <div class="field">
-            <label>Bundesland</label>
+          <div class="field"><label>Bundesland</label>
             <select id="st-bundesland">
               <option value="9" selected>Bremen (9%)</option>
               <option value="9">Baden-Württemberg (9%)</option>
@@ -321,54 +346,28 @@
               <option value="9">Thüringen (9%)</option>
             </select>
           </div>
-          <div class="field">
-            <label>Bruttogehalt monatlich (€)</label>
-            <input type="number" id="st-brutto" value="4500" min="0" step="100">
-          </div>
-          <div class="field">
-            <label>Alter</label>
-            <input type="number" id="st-alter" value="28" min="18" max="67" step="1">
-          </div>
-          <div class="field">
-            <label>Kinderfreibeträge</label>
+          <div class="field"><label>Bruttogehalt monatlich (€)</label><input type="number" id="st-brutto" value="4500" min="0" step="100"></div>
+          <div class="field"><label>Alter</label><input type="number" id="st-alter" value="28" min="18" max="67" step="1"></div>
+          <div class="field"><label>Kinderfreibeträge</label>
             <select id="st-kinder">
               <option value="0">0 – keine Kinder</option>
-              <option value="0.5">0,5</option>
-              <option value="1">1,0</option>
-              <option value="1.5">1,5</option>
-              <option value="2">2,0</option>
-              <option value="2.5">2,5</option>
-              <option value="3">3,0</option>
+              <option value="0.5">0,5</option><option value="1">1,0</option>
+              <option value="1.5">1,5</option><option value="2">2,0</option>
+              <option value="2.5">2,5</option><option value="3">3,0</option>
             </select>
           </div>
-          <div class="field">
-            <label>Krankenversicherung</label>
-            <select id="st-kv">
-              <option value="gesetzlich">Gesetzlich (GKV)</option>
-              <option value="privat">Privat (PKV)</option>
-            </select>
+          <div class="field"><label>Krankenversicherung</label>
+            <select id="st-kv"><option value="gesetzlich">Gesetzlich (GKV)</option><option value="privat">Privat (PKV)</option></select>
           </div>
         </div>
         <div class="field-row">
           <div>
-            <div class="toggle-row">
-              <label>Kirchensteuerpflichtig</label>
-              <label class="toggle"><input type="checkbox" id="st-kirche"><span class="toggle-slider"></span></label>
-            </div>
-            <div class="toggle-row">
-              <label>Kinderlos (Pflegezuschlag)</label>
-              <label class="toggle"><input type="checkbox" id="st-kinderlos" checked><span class="toggle-slider"></span></label>
-            </div>
+            <div class="toggle-row"><label class="lbl">Kirchensteuerpflichtig</label><label class="toggle"><input type="checkbox" id="st-kirche"><span class="tog-sl"></span></label></div>
+            <div class="toggle-row"><label class="lbl">Kinderlos (Pflegezuschlag)</label><label class="toggle"><input type="checkbox" id="st-kinderlos" checked><span class="tog-sl"></span></label></div>
           </div>
           <div>
-            <div class="field">
-              <label>Zusatzbeitrag KV (%) <span style="font-size:11px;color:var(--text3)">Standard ~2,59%</span></label>
-              <input type="number" id="st-kv-zusatz" value="2.59" min="0" max="5" step="0.01">
-            </div>
-            <div class="field">
-              <label>Freibetrag / Jahr (€)</label>
-              <input type="number" id="st-freibetrag" value="0" min="0" step="100">
-            </div>
+            <div class="field"><label>Zusatzbeitrag KV (%) <span style="font-size:11px;color:var(--text3)">~2,59%</span></label><input type="number" id="st-kv-zusatz" value="2.59" min="0" max="5" step="0.01"></div>
+            <div class="field"><label>Freibetrag / Jahr (€)</label><input type="number" id="st-freibetrag" value="0" min="0" step="100"></div>
           </div>
         </div>
       </div>
@@ -380,349 +379,478 @@
   </main>
 </div>
 
+<!-- ══════════════ DEPOT ══════════════ -->
+<div id="page-depot" style="display:none;padding:24px">
+  <div style="display:grid;grid-template-columns:300px 1fr;gap:24px;align-items:start">
+    <div>
+      <div class="card" style="margin-bottom:16px">
+        <div class="card-title">Depot-Parameter</div>
+        <div class="field"><label>ETF / Fonds Name (optional)</label><input type="text" id="dep-name" placeholder="z.B. Vanguard FTSE All-World"></div>
+        <div class="field"><label>Startkapital (€)</label><input type="number" id="dep-start" value="0" min="0" step="500"></div>
+        <div class="field"><label>Monatliche Sparrate (€)</label><input type="number" id="dep-rate" value="200" min="0" step="50"></div>
+        <div class="field"><label>Sonderzahlung / Jahr (€)</label><input type="number" id="dep-sonder" value="0" min="0" step="100"></div>
+        <div class="slider-wrap">
+          <div class="slider-head"><label>Anlagedauer</label><span id="dep-laufzeit-out">38 Jahre</span></div>
+          <input type="range" id="dep-laufzeit" min="1" max="50" value="38" step="1">
+        </div>
+        <div class="slider-wrap" style="margin-bottom:0">
+          <div class="slider-head"><label>Ø Rendite p.a.</label><span id="dep-rendite-out">7,0 %</span></div>
+          <input type="range" id="dep-rendite" min="-10" max="15" value="7" step="0.5">
+        </div>
+      </div>
+      <div class="card" style="margin-bottom:0">
+        <div class="card-title">Auszahlungsphase</div>
+        <div style="display:flex;gap:8px;margin-bottom:14px">
+          <button class="mode-btn active" id="dep-mode-laufzeit" onclick="setDepMode('laufzeit')">Feste Laufzeit</button>
+          <button class="mode-btn" id="dep-mode-entnahme" onclick="setDepMode('entnahme')">Feste Entnahme</button>
+        </div>
+        <div id="dep-az-laufzeit">
+          <div class="slider-wrap">
+            <div class="slider-head"><label>Entnahmedauer</label><span id="dep-az-jahre-out">20 Jahre</span></div>
+            <input type="range" id="dep-az-jahre" min="1" max="40" value="20" step="1">
+          </div>
+        </div>
+        <div id="dep-az-entnahme" style="display:none">
+          <div class="field"><label>Monatliche Entnahme (€)</label><input type="number" id="dep-az-betrag" value="500" min="0" step="50"></div>
+        </div>
+        <div class="slider-wrap" style="margin-bottom:0">
+          <div class="slider-head"><label>Rendite in Auszahlungsphase</label><span id="dep-az-rendite-out">3,0 %</span></div>
+          <input type="range" id="dep-az-rendite" min="-5" max="10" value="3" step="0.5">
+        </div>
+      </div>
+    </div>
+
+    <div>
+      <div style="display:grid;grid-template-columns:repeat(2,1fr);gap:12px;margin-bottom:20px">
+        <div class="metric hl"><div class="metric-label">Endvermögen Ansparphase</div><div class="metric-val" id="dep-m-end">–</div><div class="metric-sub" id="dep-m-faktor">–</div></div>
+        <div class="metric gr"><div class="metric-label">Nach Abgeltungssteuer</div><div class="metric-val" id="dep-m-netto">–</div><div class="metric-sub">26,375% auf Kursgewinne</div></div>
+        <div class="metric"><div class="metric-label">Kursgewinne</div><div class="metric-val" id="dep-m-gewinn">–</div><div class="metric-sub" id="dep-m-gewinn-pct">–</div></div>
+        <div class="metric"><div class="metric-label">Eigene Einzahlungen</div><div class="metric-val" id="dep-m-einz">–</div><div class="metric-sub" id="dep-m-einz-pct">–</div></div>
+      </div>
+
+      <div class="tabs">
+        <button class="tab active" onclick="switchTab('dep','anspar',this)">Ansparphase</button>
+        <button class="tab" onclick="switchTab('dep','auszahlung',this)">Auszahlungsphase</button>
+        <button class="tab" onclick="switchTab('dep','table',this)">Jahrestabelle</button>
+      </div>
+
+      <div id="dep-tab-anspar">
+        <div class="card">
+          <div class="card-title">Vermögensentwicklung Ansparphase</div>
+          <div class="chart-wrap"><canvas id="depotChart"></canvas></div>
+          <div class="legend">
+            <span><span class="ldot" style="background:#85B7EB"></span>Einzahlungen</span>
+            <span><span class="ldot" style="background:#5DCAA5"></span>Kursgewinne</span>
+          </div>
+        </div>
+      </div>
+
+      <div id="dep-tab-auszahlung" style="display:none">
+        <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin-bottom:20px">
+          <div class="metric hl"><div class="metric-label">Startkapital Auszahlung</div><div class="metric-val" id="dep-az-startkapital">–</div><div class="metric-sub">= Endvermögen (nach Steuer)</div></div>
+          <div class="metric gr"><div class="metric-label" id="dep-az-metric-label">Monatliche Entnahme</div><div class="metric-val" id="dep-az-metric-val">–</div><div class="metric-sub" id="dep-az-metric-sub">–</div></div>
+          <div class="metric"><div class="metric-label" id="dep-az-rest-label">Restkapital nach Laufzeit</div><div class="metric-val" id="dep-az-rest-val">–</div><div class="metric-sub" id="dep-az-rest-sub">–</div></div>
+        </div>
+        <div class="card">
+          <div class="card-title">Kapitalverlauf Auszahlungsphase</div>
+          <div class="chart-wrap"><canvas id="dep-az-chart"></canvas></div>
+        </div>
+        <div class="card">
+          <div class="card-title">Jahresübersicht Auszahlung</div>
+          <div class="table-wrap">
+            <table>
+              <thead><tr><th>Jahr</th><th>Kapital Anfang</th><th>Entnahmen / Jahr</th><th>Zinsen / Jahr</th><th>Kapital Ende</th></tr></thead>
+              <tbody id="dep-az-table"></tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+
+      <div id="dep-tab-table" style="display:none">
+        <div class="card">
+          <div class="card-title">Jahresübersicht Ansparphase</div>
+          <div class="table-wrap">
+            <table>
+              <thead><tr><th>Jahr</th><th>Endvermögen</th><th>Einzahlungen</th><th>Kursgewinne</th><th>Rendite</th><th>Nach Abgeltungssteuer</th></tr></thead>
+              <tbody id="dep-table-body"></tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
 <script>
-const fmt = v => v>=1e6?(v/1e6).toLocaleString('de-DE',{minimumFractionDigits:2,maximumFractionDigits:2})+' Mio. €':Math.round(v).toLocaleString('de-DE')+' €';
-const fmtE = v => v.toLocaleString('de-DE',{minimumFractionDigits:2,maximumFractionDigits:2})+' €';
-const pct = v => (v*100).toFixed(1).replace('.',',')+' %';
+const fmt  = v => isNaN(v)||!isFinite(v)?'–':v>=1e6?(v/1e6).toLocaleString('de-DE',{minimumFractionDigits:2,maximumFractionDigits:2})+' Mio. €':Math.round(v).toLocaleString('de-DE')+' €';
+const fmtE = v => isNaN(v)||!isFinite(v)?'–':v.toLocaleString('de-DE',{minimumFractionDigits:2,maximumFractionDigits:2})+' €';
+const pct  = v => isNaN(v)||!isFinite(v)?'–':(v*100).toFixed(1).replace('.',',')+' %';
 const isDark = () => matchMedia('(prefers-color-scheme:dark)').matches;
+const C={eigen:['#AFA9EC','#3C3489'],sonder:['#85B7EB','#185FA5'],ag:['#97C459','#3B6D11'],agJ:['#EF9F27','#BA7517'],vwl:['#ED93B1','#993556'],zins:['#5DCAA5','#0F6E56']};
+const col=k=>isDark()?C[k][1]:C[k][0];
+const charts={};
+let bavMode='laufzeit', depMode='laufzeit';
 
-const C = {
-  eigen:  ['#AFA9EC','#3C3489'],
-  sonder: ['#85B7EB','#185FA5'],
-  ag:     ['#97C459','#3B6D11'],
-  agJ:    ['#EF9F27','#BA7517'],
-  vwl:    ['#ED93B1','#993556'],
-  zins:   ['#5DCAA5','#0F6E56'],
-};
-const col = k => isDark() ? C[k][1] : C[k][0];
-let charts = {};
-
-function calcESt(zvE) {
-  if (zvE <= 12096) return 0;
-  if (zvE <= 17005) { const y=(zvE-12096)/10000; return Math.floor((979.18*y+1400)*y); }
-  if (zvE <= 68480) { const z=(zvE-17005)/10000; return Math.floor((192.59*z+2397)*z+966); }
-  if (zvE <= 277825) return Math.floor(0.42*zvE-10602);
-  return Math.floor(0.45*zvE-18936);
+// ── Steuer ──────────────────────────────────────────────
+function calcESt(z){
+  if(z<=12096)return 0;
+  if(z<=17005){const y=(z-12096)/10000;return Math.floor((979.18*y+1400)*y);}
+  if(z<=68480){const x=(z-17005)/10000;return Math.floor((192.59*x+2397)*x+966);}
+  if(z<=277825)return Math.floor(0.42*z-10602);
+  return Math.floor(0.45*z-18936);
+}
+function gstSatz(z){return(calcESt(z+100)-calcESt(z))/100;}
+function calcSteuer(){
+  const brutto=parseFloat(document.getElementById('st-brutto').value)||0;
+  const alter=parseInt(document.getElementById('st-alter').value)||28;
+  const klasse=parseInt(document.getElementById('st-klasse').value);
+  const kinder=parseFloat(document.getElementById('st-kinder').value)||0;
+  const kirche=document.getElementById('st-kirche').checked;
+  const kinderlos=document.getElementById('st-kinderlos').checked;
+  const kvTyp=document.getElementById('st-kv').value;
+  const kvZusatz=parseFloat(document.getElementById('st-kv-zusatz').value)||2.59;
+  const freibetrag=parseFloat(document.getElementById('st-freibetrag').value)||0;
+  const kirchenPct=parseFloat(document.getElementById('st-bundesland').value)/100;
+  const bruttoJahr=brutto*12;
+  const kammer=6.30,kammerJahr=kammer*12;
+  const rvSatz=0.093,avSatz=0.013;
+  const kvSatz=kvTyp==='gesetzlich'?(0.073+kvZusatz/200):0;
+  const pvSatz=(kinderlos&&alter>=23)?0.023:0.018;
+  const rv=bruttoJahr*rvSatz,av=bruttoJahr*avSatz,kv=bruttoJahr*kvSatz,pv=bruttoJahr*pvSatz;
+  const svGesamt=rv+av+kv+pv+kammerJahr;
+  let zvE=Math.max(0,bruttoJahr-svGesamt-1230-kinder*6672-freibetrag);
+  let splitting=false;
+  if(klasse===3){zvE=zvE/2;splitting=true;}
+  if(klasse===2)zvE=Math.max(0,zvE-4260);
+  let est=calcESt(zvE);
+  if(splitting)est*=2;
+  const soli=est>18130?est*0.055:0;
+  const kircheSt=kirche?est*kirchenPct:0;
+  const nettoJahr=bruttoJahr-svGesamt-est-soli-kircheSt;
+  const gst=gstSatz(zvE);
+  const gstGesamt=gst*(1+(est>18130?0.055:0)+(kirche?kirchenPct:0))+kvSatz+pvSatz+rvSatz+avSatz;
+  return{brutto,bruttoJahr,kammer,kammerJahr,rv,av,kv,pv,svGesamt,est,soli,kircheSt,
+    nettoMonat:nettoJahr/12,gst,gstGesamt,kvSatz,pvSatz,kirchenPct};
 }
 
-function grenzsteuersatz(zvE) {
-  return (calcESt(zvE+100) - calcESt(zvE)) / 100;
-}
-
-function calcSteuer() {
-  const brutto     = parseFloat(document.getElementById('st-brutto').value)||0;
-  const alter      = parseInt(document.getElementById('st-alter').value)||28;
-  const klasse     = parseInt(document.getElementById('st-klasse').value);
-  const kinder     = parseFloat(document.getElementById('st-kinder').value)||0;
-  const kirche     = document.getElementById('st-kirche').checked;
-  const kinderlos  = document.getElementById('st-kinderlos').checked;
-  const kvTyp      = document.getElementById('st-kv').value;
-  const kvZusatz   = parseFloat(document.getElementById('st-kv-zusatz').value)||2.59;
-  const freibetrag = parseFloat(document.getElementById('st-freibetrag').value)||0;
-  const kirchenPct = parseFloat(document.getElementById('st-bundesland').value)/100;
-
-  const bruttoJahr  = brutto * 12;
-  const kammer      = 6.30;
-  const kammerJahr  = kammer * 12;
-
-  const rvSatz = 0.093;
-  const avSatz = 0.013;
-  const kvSatz = kvTyp === 'gesetzlich' ? (0.073 + kvZusatz/200) : 0;
-  const pvSatz = (kinderlos && alter >= 23) ? 0.023 : 0.018;
-
-  const rv = bruttoJahr * rvSatz;
-  const av = bruttoJahr * avSatz;
-  const kv = bruttoJahr * kvSatz;
-  const pv = bruttoJahr * pvSatz;
-  const svGesamt = rv + av + kv + pv + kammerJahr;
-
-  const werbung  = 1230;
-  const kinderfb = kinder * 6672;
-  const vorsorgepauschale = svGesamt;
-
-  let zvE = Math.max(0, bruttoJahr - vorsorgepauschale - werbung - kinderfb - freibetrag);
-  let splitting = false;
-  if (klasse === 3) { zvE = zvE/2; splitting = true; }
-  if (klasse === 2) zvE = Math.max(0, zvE - 4260);
-
-  let est = calcESt(zvE);
-  if (splitting) est = est * 2;
-
-  const soliFreigrenze = 18130;
-  const soli    = est > soliFreigrenze ? est * 0.055 : 0;
-  const kircheSt = kirche ? est * kirchenPct : 0;
-  const steuernGesamt = est + soli + kircheSt;
-
-  const nettoJahr  = bruttoJahr - svGesamt - steuernGesamt;
-  const nettoMonat = nettoJahr / 12;
-
-  const gst = grenzsteuersatz(splitting ? zvE : zvE);
-  const soliAufschlag    = est > soliFreigrenze ? 0.055 : 0;
-  const kirchenAufschlag = kirche ? kirchenPct : 0;
-  const gstGesamt = gst * (1 + soliAufschlag + kirchenAufschlag) + kvSatz + pvSatz + rvSatz + avSatz;
-
-  return {
-    brutto, bruttoJahr,
-    kammer, kammerJahr,
-    rv, av, kv, pv,
-    svGesamt, est, soli, kircheSt,
-    steuernGesamt,
-    nettoJahr, nettoMonat,
-    gst, gstGesamt,
-    kvSatz, pvSatz, kirchenPct,
-    zvE: splitting ? zvE*2 : zvE
-  };
-}
-
-function updateSteuer() {
-  const s = calcSteuer();
-
-  document.getElementById('m-grenz').textContent    = pct(s.gst);
-  document.getElementById('m-grenz-sub').textContent = 'Gesamt inkl. SV: '+pct(s.gstGesamt);
-
-  const vwlAG   = parseFloat(document.getElementById('vwl-ag').value)||0;
-  const vwlANval = Math.round(vwlAG * s.gstGesamt);
-  document.getElementById('vwl-an').value           = vwlANval;
-  document.getElementById('vwl-an-display').textContent = fmtE(vwlANval);
-
-  document.getElementById('steuer-infobox').textContent =
-    'Grenzsteuersatz '+pct(s.gst)+' (inkl. Sozialabgaben: '+pct(s.gstGesamt)+'). Die VWL-Mehrkosten wurden automatisch aktualisiert.';
-
-  const soliFreigrenze = 18130;
-  const kvZusatz = parseFloat(document.getElementById('st-kv-zusatz').value)||2.59;
-  const rows = [
-    ['Bruttogehalt / Monat',            fmtE(s.brutto),          ''],
-    ['Lohnsteuer',                      fmtE(s.est/12),          '§32a EStG'],
-    ['Solidaritätszuschlag',            fmtE(s.soli/12),         s.soli>0?'5,5%':'entfällt'],
-    ['Kirchensteuer',                   fmtE(s.kircheSt/12),     s.kircheSt>0?pct(s.kirchenPct):'entfällt'],
-    ['Rentenversicherung (AN)',          fmtE(s.rv/12),           pct(0.093)],
-    ['Arbeitslosenversicherung (AN)',    fmtE(s.av/12),           pct(0.013)],
-    ['Handelskammer Bremen',            fmtE(s.kammer),          'fix 6,30 €/Monat'],
-    ['Krankenversicherung (AN)',         fmtE(s.kv/12),           s.kvSatz>0?pct(s.kvSatz):'PKV'],
-    ['Pflegeversicherung (AN)',          fmtE(s.pv/12),           pct(s.pvSatz)],
-  ];
-
-  document.getElementById('steuer-result').innerHTML =
-    rows.map(([l,v,h])=>`
-      <div class="steuer-result-row">
-        <span style="color:var(--text2)">${l}</span>
-        <span style="display:flex;gap:12px;align-items:center">
-          ${h?`<span style="color:var(--text3);font-size:12px">${h}</span>`:''}
-          <span>- ${v}</span>
-        </span>
-      </div>`).join('')+`
-    <div class="steuer-result-row total">
-      <span>Netto / Monat</span><span>${fmtE(s.nettoMonat)}</span>
-    </div>`;
-}
-
-function calcData() {
-  const sk    = parseFloat(document.getElementById('startkapital').value)||0;
-  const mr    = parseFloat(document.getElementById('monatsrate').value)||0;
-  const sz    = parseFloat(document.getElementById('sonderzahlung').value)||0;
-  const agM   = parseFloat(document.getElementById('ag-monat').value)||0;
-  const agJ   = parseFloat(document.getElementById('ag-jahr').value)||0;
-  const vwlAG = parseFloat(document.getElementById('vwl-ag').value)||0;
-  const jahre = parseInt(document.getElementById('laufzeit').value);
-  const rm    = (parseFloat(document.getElementById('rendite').value)/100)/12;
-
-  const rows = [];
-  for (let j=1; j<=jahre; j++) {
-    const n = j*12;
-    const grow = x => x*(Math.pow(1+rm,n)-1)/rm;
-    const wStart = sk*Math.pow(1+rm,n);
-    const wMr    = grow(mr);
-    const wAgM   = grow(agM);
-    const wVwlAG = grow(vwlAG);
-    let wSz=0, wAgJ=0;
-    for (let y=1; y<=j; y++) {
-      const rem=(j-y)*12;
-      wSz  += sz  * Math.pow(1+rm,rem);
-      wAgJ += agJ * Math.pow(1+rm,rem);
+// ── Auszahlungsphase Berechnung ──────────────────────────
+function calcAuszahlung(startKapital, renditeJahr, mode, laufzeitJahre, monatlEntnahme){
+  const rm=renditeJahr/100/12;
+  if(mode==='laufzeit'){
+    // monatliche Entnahme berechnen bei fester Laufzeit
+    const n=laufzeitJahre*12;
+    let monatlich;
+    if(rm===0) monatlich=startKapital/n;
+    else monatlich=startKapital*(rm*Math.pow(1+rm,n))/(Math.pow(1+rm,n)-1);
+    const rows=[];
+    let k=startKapital;
+    for(let j=1;j<=laufzeitJahre;j++){
+      const kAnfang=k;
+      const entnahmen=monatlich*12;
+      let zinsen=0;
+      for(let m=0;m<12;m++){zinsen+=k*rm;k=k*(1+rm)-monatlich;}
+      rows.push({j,kAnfang:Math.round(kAnfang),entnahmen:Math.round(entnahmen),zinsen:Math.round(zinsen),kEnde:Math.round(Math.max(0,k))});
     }
-    const einzEigen = sk + mr*n + sz*j;
-    const einzAG    = agM*n + agJ*j + vwlAG*n;
-    const total     = wStart+wMr+wAgM+wSz+wAgJ+wVwlAG;
-    const zins      = total - einzEigen - einzAG;
-    rows.push({
-      j, total:Math.round(total),
-      eigen:Math.round(sk+mr*n), sonder:Math.round(sz*j),
-      ag:Math.round(agM*n), agJ:Math.round(agJ*j),
-      vwl:Math.round(vwlAG*n), zins:Math.round(zins),
-      einzEigen:Math.round(einzEigen), einzAG:Math.round(einzAG),
-    });
+    return{monatlich,laufzeit:laufzeitJahre,restkapital:Math.max(0,k),rows};
+  } else {
+    // Laufzeit berechnen bei fester Entnahme
+    const rows=[];
+    let k=startKapital,j=0;
+    while(k>0&&j<100){
+      j++;
+      const kAnfang=k;
+      const entnahmen=monatlEntnahme*12;
+      let zinsen=0;
+      for(let m=0;m<12;m++){zinsen+=k*rm;k=k*(1+rm)-monatlEntnahme;if(k<=0){k=0;break;}}
+      rows.push({j,kAnfang:Math.round(kAnfang),entnahmen:Math.round(Math.min(entnahmen,kAnfang)),zinsen:Math.round(zinsen),kEnde:Math.round(Math.max(0,k))});
+      if(k<=0)break;
+    }
+    return{monatlich:monatlEntnahme,laufzeit:j,restkapital:0,rows};
+  }
+}
+
+function renderAuszahlung(prefix, startKapital, az){
+  document.getElementById(prefix+'az-startkapital').textContent=fmt(startKapital);
+  if(bavMode==='laufzeit'||depMode==='laufzeit'){
+    document.getElementById(prefix+'az-metric-label').textContent='Monatliche Entnahme';
+    document.getElementById(prefix+'az-metric-val').textContent=fmtE(az.monatlich);
+    document.getElementById(prefix+'az-metric-sub').textContent='bei '+az.laufzeit+' Jahren Laufzeit';
+    document.getElementById(prefix+'az-rest-label').textContent='Restkapital nach Laufzeit';
+    document.getElementById(prefix+'az-rest-val').textContent=fmt(az.restkapital);
+    document.getElementById(prefix+'az-rest-sub').textContent='nach '+az.laufzeit+' Jahren';
+  } else {
+    document.getElementById(prefix+'az-metric-label').textContent='Monatliche Entnahme';
+    document.getElementById(prefix+'az-metric-val').textContent=fmtE(az.monatlich);
+    document.getElementById(prefix+'az-metric-sub').textContent='feste Entnahme';
+    document.getElementById(prefix+'az-rest-label').textContent='Kapital reicht für';
+    document.getElementById(prefix+'az-rest-val').textContent=az.laufzeit+' Jahre';
+    document.getElementById(prefix+'az-rest-sub').textContent='dann aufgebraucht';
+  }
+
+  const labels=az.rows.map(r=>r.j+' J.');
+  const dark=isDark();
+  const gc=dark?'rgba(255,255,255,0.07)':'rgba(0,0,0,0.07)';
+  const tc=dark?'#888':'#999';
+  const chartId=prefix==='bav-'?'bav-az-chart':'dep-az-chart';
+  if(charts[chartId])charts[chartId].destroy();
+  charts[chartId]=new Chart(document.getElementById(chartId),{
+    type:'line',
+    data:{labels,datasets:[{
+      label:'Kapital',
+      data:az.rows.map(r=>r.kEnde),
+      borderColor:dark?'#AFA9EC':'#534AB7',
+      backgroundColor:dark?'rgba(174,169,236,0.15)':'rgba(83,74,183,0.1)',
+      fill:true,tension:0.3,pointRadius:2
+    }]},
+    options:{responsive:true,maintainAspectRatio:false,
+      plugins:{legend:{display:false},tooltip:{callbacks:{label:ctx=>' '+fmt(ctx.raw)}}},
+      scales:{x:{ticks:{color:tc,font:{size:11}},grid:{color:gc}},
+              y:{ticks:{color:tc,font:{size:11},callback:v=>fmt(v)},grid:{color:gc}}}}
+  });
+
+  const tableId=prefix==='bav-'?'bav-az-table':'dep-az-table';
+  document.getElementById(tableId).innerHTML=az.rows.map(r=>`<tr>
+    <td><strong>${r.j}</strong></td>
+    <td>${fmt(r.kAnfang)}</td>
+    <td style="color:var(--red)">- ${fmt(r.entnahmen)}</td>
+    <td style="color:var(--green)">+ ${fmt(r.zinsen)}</td>
+    <td style="font-weight:500">${fmt(r.kEnde)}</td>
+  </tr>`).join('');
+}
+
+// ── BAV ─────────────────────────────────────────────────
+function updateSteuer(){
+  const s=calcSteuer();
+  document.getElementById('m-grenz').textContent=pct(s.gst);
+  document.getElementById('m-grenz-sub').textContent='Gesamt inkl. SV: '+pct(s.gstGesamt);
+  const vwlAG=parseFloat(document.getElementById('vwl-ag').value)||0;
+  const vwlANval=Math.round(vwlAG*s.gstGesamt);
+  document.getElementById('vwl-an').value=vwlANval;
+  document.getElementById('vwl-an-display').textContent=fmtE(vwlANval);
+  document.getElementById('steuer-infobox').textContent='Grenzsteuersatz '+pct(s.gst)+' (inkl. Sozialabgaben: '+pct(s.gstGesamt)+'). VWL-Mehrkosten aktualisiert.';
+  const rows=[
+    ['Bruttogehalt / Monat',fmtE(s.brutto),''],
+    ['Lohnsteuer',fmtE(s.est/12),'§32a EStG'],
+    ['Solidaritätszuschlag',fmtE(s.soli/12),s.soli>0?'5,5%':'entfällt'],
+    ['Kirchensteuer',fmtE(s.kircheSt/12),s.kircheSt>0?pct(s.kirchenPct):'entfällt'],
+    ['Rentenversicherung (AN)',fmtE(s.rv/12),pct(0.093)],
+    ['Arbeitslosenversicherung (AN)',fmtE(s.av/12),pct(0.013)],
+    ['Handelskammer Bremen',fmtE(s.kammer),'fix 6,30 €/Monat'],
+    ['Krankenversicherung (AN)',fmtE(s.kv/12),s.kvSatz>0?pct(s.kvSatz):'PKV'],
+    ['Pflegeversicherung (AN)',fmtE(s.pv/12),pct(s.pvSatz)],
+  ];
+  document.getElementById('steuer-result').innerHTML=rows.map(([l,v,h])=>`
+    <div class="sr-row"><span style="color:var(--text2)">${l}</span>
+    <span style="display:flex;gap:12px;align-items:center">${h?`<span style="color:var(--text3);font-size:12px">${h}</span>`:''}<span>- ${v}</span></span></div>`).join('')+
+    `<div class="sr-row tot"><span>Netto / Monat</span><span>${fmtE(s.nettoMonat)}</span></div>`;
+}
+
+function calcData(){
+  const sk=parseFloat(document.getElementById('startkapital').value)||0;
+  const mr=parseFloat(document.getElementById('monatsrate').value)||0;
+  const sz=parseFloat(document.getElementById('sonderzahlung').value)||0;
+  const agM=parseFloat(document.getElementById('ag-monat').value)||0;
+  const agJ=parseFloat(document.getElementById('ag-jahr').value)||0;
+  const vwlAG=parseFloat(document.getElementById('vwl-ag').value)||0;
+  const jahre=parseInt(document.getElementById('laufzeit').value);
+  const rm=(parseFloat(document.getElementById('rendite').value)/100)/12;
+  const rows=[];
+  for(let j=1;j<=jahre;j++){
+    const n=j*12;
+    const grow=x=>rm===0?x*n:x*(Math.pow(1+rm,n)-1)/rm;
+    const wStart=rm===0?sk:sk*Math.pow(1+rm,n);
+    let wSz=0,wAgJ=0;
+    for(let y=1;y<=j;y++){const r=(j-y)*12;wSz+=sz*(rm===0?1:Math.pow(1+rm,r));wAgJ+=agJ*(rm===0?1:Math.pow(1+rm,r));}
+    const total=wStart+grow(mr)+grow(agM)+wSz+wAgJ+grow(vwlAG);
+    const einzEigen=sk+mr*n+sz*j,einzAG=agM*n+agJ*j+vwlAG*n;
+    rows.push({j,total:Math.round(total),eigen:Math.round(sk+mr*n),sonder:Math.round(sz*j),ag:Math.round(agM*n),agJ:Math.round(agJ*j),vwl:Math.round(vwlAG*n),zins:Math.round(total-einzEigen-einzAG),einzEigen:Math.round(einzEigen),einzAG:Math.round(einzAG)});
   }
   return rows;
 }
 
-function update() {
-  const j = document.getElementById('laufzeit').value;
-  const r = parseFloat(document.getElementById('rendite').value).toFixed(1).replace('.',',');
-  document.getElementById('laufzeit-out').textContent = j+' Jahr'+(j==1?'':'e');
-  document.getElementById('rendite-out').textContent  = r+' %';
-
+function updateBAV(){
+  const j=document.getElementById('laufzeit').value;
+  const r=parseFloat(document.getElementById('rendite').value).toFixed(1).replace('.',',');
+  const azR=parseFloat(document.getElementById('bav-az-rendite').value).toFixed(1).replace('.',',');
+  const azJ=document.getElementById('bav-az-jahre').value;
+  document.getElementById('laufzeit-out').textContent=j+' Jahr'+(j==1?'':'e');
+  document.getElementById('rendite-out').textContent=r+' %';
+  document.getElementById('bav-az-rendite-out').textContent=azR+' %';
+  document.getElementById('bav-az-jahre-out').textContent=azJ+' Jahre';
   updateSteuer();
-  const s = calcSteuer();
+  const s=calcSteuer();
+  const rows=calcData();
+  const last=rows[rows.length-1];
+  const totalEinz=last.einzEigen+last.einzAG;
+  document.getElementById('m-end').textContent=fmt(last.total);
+  document.getElementById('m-faktor').textContent='Faktor '+((last.total/Math.max(totalEinz,1)).toFixed(2).replace('.',','))+'x';
+  document.getElementById('m-zins').textContent=fmt(last.zins);
+  document.getElementById('m-zins-pct').textContent=pct(last.zins/last.total)+' des Endvermögens';
+  document.getElementById('m-eigen').textContent=fmt(last.einzEigen);
+  document.getElementById('m-eigen-pct').textContent=pct(last.einzEigen/last.total)+' des Endvermögens';
+  document.getElementById('m-ag').textContent=fmt(last.einzAG);
+  document.getElementById('m-ag-pct').textContent=pct(last.einzAG/last.total)+' des Endvermögens';
+  const mr2=parseFloat(document.getElementById('monatsrate').value)||0;
+  const sz2=parseFloat(document.getElementById('sonderzahlung').value)||0;
+  const vwlAN2=parseFloat(document.getElementById('vwl-an').value)||0;
+  const agM2=parseFloat(document.getElementById('ag-monat').value)||0;
+  const agJ2=parseFloat(document.getElementById('ag-jahr').value)||0;
+  const vwlAG2=parseFloat(document.getElementById('vwl-ag').value)||0;
+  const jahre=parseInt(document.getElementById('laufzeit').value);
+  const entgelt=document.getElementById('entgelt').checked;
+  const ersparnis=entgelt?mr2*s.gstGesamt:0;
+  document.getElementById('m-kosten').textContent=fmt((mr2-ersparnis)*12*jahre+sz2*jahre+vwlAN2*12*jahre);
+  document.getElementById('m-kosten-sub').textContent=fmtE(mr2-ersparnis+sz2/12+vwlAN2)+' / Monat (Ø)';
+  const kItems=[
+    ['Eigene Monatsrate (brutto)',entgelt?mr2:null],
+    ['Eigene Monatsrate (netto)',!entgelt?mr2:null],
+    ['Sonderzahlung (Ø/Monat)',sz2/12>0?sz2/12:null],
+    ['VWL Steuermehrkosten',vwlAN2>0?vwlAN2:null],
+    ['– Steuer- & SV-Ersparnis',entgelt?-ersparnis:null],
+  ].filter(r=>r[1]!==null);
+  const sItems=[
+    ['Eigene Monatsrate',mr2>0?mr2:null],
+    ['Sonderzahlung (Ø/Monat)',sz2/12>0?sz2/12:null],
+    ['AG Monatsbeitrag',agM2>0?agM2:null],
+    ['AG Sonderzahlung (Ø/Monat)',agJ2/12>0?agJ2/12:null],
+    ['VWL Arbeitgeber',vwlAG2>0?vwlAG2:null],
+  ].filter(r=>r[1]!==null);
+  const rHtml=items=>items.map(([l,v])=>`<div style="display:flex;justify-content:space-between;font-size:13px;padding:5px 0;border-bottom:1px solid var(--border)"><span style="color:${v<0?'var(--green)':'var(--text2)'}">${l}</span><span style="color:${v<0?'var(--green)':'var(--text)'}">${v<0?'- '+fmtE(-v):fmtE(v)}</span></div>`).join('');
+  document.getElementById('gg-kosten-rows').innerHTML=rHtml(kItems);
+  document.getElementById('gg-kosten-total').textContent=fmtE(Math.max(0,kItems.reduce((a,r)=>a+r[1],0)));
+  document.getElementById('gg-spar-rows').innerHTML=rHtml(sItems);
+  document.getElementById('gg-spar-total').textContent=fmtE(sItems.reduce((a,r)=>a+r[1],0));
+  document.getElementById('gg-netto').textContent=fmtE(Math.max(0,kItems.reduce((a,r)=>a+r[1],0)))+' von mir, '+fmtE(sItems.reduce((a,r)=>a+r[1],0))+' fließen ins Depot';
 
-  const rows = calcData();
-  const last = rows[rows.length-1];
-  const totalEinz = last.einzEigen + last.einzAG;
-
-  document.getElementById('m-end').textContent       = fmt(last.total);
-  document.getElementById('m-faktor').textContent    = 'Faktor '+((last.total/Math.max(totalEinz,1)).toFixed(2).replace('.',','))+'x';
-  document.getElementById('m-zins').textContent      = fmt(last.zins);
-  document.getElementById('m-zins-pct').textContent  = pct(last.zins/last.total)+' des Endvermögens';
-  document.getElementById('m-eigen').textContent     = fmt(last.einzEigen);
-  document.getElementById('m-eigen-pct').textContent = pct(last.einzEigen/last.total)+' des Endvermögens';
-  document.getElementById('m-ag').textContent        = fmt(last.einzAG);
-  document.getElementById('m-ag-pct').textContent    = pct(last.einzAG/last.total)+' des Endvermögens';
-
-  const mr2    = parseFloat(document.getElementById('monatsrate').value)||0;
-  const sz2    = parseFloat(document.getElementById('sonderzahlung').value)||0;
-  const vwlAN2 = parseFloat(document.getElementById('vwl-an').value)||0;
-  const jahre  = parseInt(document.getElementById('laufzeit').value);
-  const entgelt = document.getElementById('entgelt').checked;
-  const entgeltErsparnis = entgelt ? mr2 * s.gstGesamt : 0;
-  const kostenMo  = mr2 - entgeltErsparnis + sz2/12 + vwlAN2;
-  const kostenGes = (mr2 - entgeltErsparnis)*12*jahre + sz2*jahre + vwlAN2*12*jahre;
-  document.getElementById('m-kosten').textContent    = fmt(kostenGes);
-  document.getElementById('m-kosten-sub').textContent= fmtE(kostenMo)+' / Monat (Ø)';
-
-  const agMonat = parseFloat(document.getElementById('ag-monat').value)||0;
-  const agJahr2 = parseFloat(document.getElementById('ag-jahr').value)||0;
-  const vwlAG2  = parseFloat(document.getElementById('vwl-ag').value)||0;
-
-  const kostenItems = [
-    ['Eigene Monatsrate (brutto)',  entgelt ? mr2 : null],
-    ['Eigene Monatsrate (netto)',   !entgelt ? mr2 : null],
-    ['Sonderzahlung (Ø/Monat)',    sz2/12 > 0 ? sz2/12 : null],
-    ['VWL Steuermehrkosten',        vwlAN2 > 0 ? vwlAN2 : null],
-    ['– Steuer- & SV-Ersparnis',   entgelt ? -entgeltErsparnis : null],
-  ].filter(r => r[1] !== null);
-  const kostenSum = Math.max(0, kostenItems.reduce((a,r)=>a+r[1],0));
-
-  const sparItems = [
-    ['Eigene Monatsrate',          mr2 > 0 ? mr2 : null],
-    ['Sonderzahlung (Ø/Monat)',   sz2/12 > 0 ? sz2/12 : null],
-    ['AG Monatsbeitrag',           agMonat > 0 ? agMonat : null],
-    ['AG Sonderzahlung (Ø/Monat)',agJahr2/12 > 0 ? agJahr2/12 : null],
-    ['VWL Arbeitgeber',            vwlAG2 > 0 ? vwlAG2 : null],
-  ].filter(r => r[1] !== null);
-  const sparSum = sparItems.reduce((a,r)=>a+r[1],0);
-
-  const rowHtml = items => items.map(([l,v])=>`
-    <div style="display:flex;justify-content:space-between;font-size:13px;padding:5px 0;border-bottom:1px solid var(--border)">
-      <span style="color:${v<0?'var(--green)':'var(--text2)'}">${l}</span>
-      <span style="color:${v<0?'var(--green)':'var(--text)'}">${v<0?'- '+fmtE(-v):fmtE(v)}</span>
-    </div>`).join('');
-
-  document.getElementById('gg-kosten-rows').innerHTML = rowHtml(kostenItems);
-  document.getElementById('gg-kosten-total').textContent = fmtE(kostenSum);
-  document.getElementById('gg-spar-rows').innerHTML = rowHtml(sparItems);
-  document.getElementById('gg-spar-total').textContent = fmtE(sparSum);
-  document.getElementById('gg-netto').textContent = fmtE(kostenSum)+' von mir, '+fmtE(sparSum)+' fließen ins Depot';
-
-  buildGrowthChart(rows);
-  buildDoughnut(last);
-  buildTable(rows);
-}
-
-function buildGrowthChart(rows) {
-  const labels = rows.map(r=>r.j===1?'1 J.':r.j+' J.');
-  const gc = isDark()?'rgba(255,255,255,0.07)':'rgba(0,0,0,0.07)';
-  const tc = isDark()?'#888':'#999';
-  const ds = [
-    {label:'Eigene Monatsrate',      data:rows.map(r=>r.eigen),  backgroundColor:col('eigen'),  stack:'s'},
-    {label:'Eigene Sonderzahlung',   data:rows.map(r=>r.sonder), backgroundColor:col('sonder'), stack:'s'},
-    {label:'AG Monatsbeitrag',       data:rows.map(r=>r.ag),     backgroundColor:col('ag'),     stack:'s'},
-    {label:'AG Jahressonderzahlung', data:rows.map(r=>r.agJ),    backgroundColor:col('agJ'),    stack:'s'},
-    {label:'VWL Arbeitgeber',        data:rows.map(r=>r.vwl),    backgroundColor:col('vwl'),    stack:'s'},
-    {label:'Zinsgewinne',            data:rows.map(r=>r.zins),   backgroundColor:col('zins'),   stack:'s'},
+  // Growth chart
+  const labels=rows.map(r=>r.j===1?'1 J.':r.j+' J.');
+  const gc=isDark()?'rgba(255,255,255,0.07)':'rgba(0,0,0,0.07)';
+  const tc=isDark()?'#888':'#999';
+  const ds=[
+    {label:'Eigene Monatsrate',data:rows.map(r=>r.eigen),backgroundColor:col('eigen'),stack:'s'},
+    {label:'Eigene Sonderzahlung',data:rows.map(r=>r.sonder),backgroundColor:col('sonder'),stack:'s'},
+    {label:'AG Monatsbeitrag',data:rows.map(r=>r.ag),backgroundColor:col('ag'),stack:'s'},
+    {label:'AG Jahressonderzahlung',data:rows.map(r=>r.agJ),backgroundColor:col('agJ'),stack:'s'},
+    {label:'VWL Arbeitgeber',data:rows.map(r=>r.vwl),backgroundColor:col('vwl'),stack:'s'},
+    {label:'Zinsgewinne',data:rows.map(r=>r.zins),backgroundColor:col('zins'),stack:'s'},
   ];
-  if (charts.growth) charts.growth.destroy();
-  charts.growth = new Chart(document.getElementById('chartGrowth'),{
-    type:'bar', data:{labels,datasets:ds},
-    options:{responsive:true,maintainAspectRatio:false,
-      plugins:{legend:{display:false},tooltip:{callbacks:{label:ctx=>' '+fmt(ctx.raw)}}},
-      scales:{
-        x:{stacked:true,ticks:{color:tc,font:{size:11},maxRotation:45,autoSkip:true,maxTicksLimit:12},grid:{color:gc}},
-        y:{stacked:true,ticks:{color:tc,font:{size:11},callback:v=>fmt(v)},grid:{color:gc}}
-      }
-    }
-  });
+  if(charts.growth)charts.growth.destroy();
+  charts.growth=new Chart(document.getElementById('chartGrowth'),{type:'bar',data:{labels,datasets:ds},options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false},tooltip:{callbacks:{label:ctx=>' '+fmt(ctx.raw)}}},scales:{x:{stacked:true,ticks:{color:tc,font:{size:11},maxRotation:45,autoSkip:true,maxTicksLimit:12},grid:{color:gc}},y:{stacked:true,ticks:{color:tc,font:{size:11},callback:v=>fmt(v)},grid:{color:gc}}}}});
   const keys=['eigen','sonder','ag','agJ','vwl','zins'];
   const lbls=['Eigene Monatsrate','Eigene Sonderzahlung','AG Monatsbeitrag','AG Jahressonderzahlung','VWL Arbeitgeber','Zinsgewinne'];
-  document.getElementById('legend-growth').innerHTML = keys.map((k,i)=>
-    `<span><span class="legend-dot" style="background:${col(k)}"></span>${lbls[i]}</span>`).join('');
-}
+  document.getElementById('legend-growth').innerHTML=keys.map((k,i)=>`<span><span class="ldot" style="background:${col(k)}"></span>${lbls[i]}</span>`).join('');
 
-function buildDoughnut(last) {
   const vals=[last.eigen,last.sonder,last.ag,last.agJ,last.vwl,last.zins];
-  const keys=['eigen','sonder','ag','agJ','vwl','zins'];
-  const lbls=['Eigene Monatsrate','Eigene Sonderzahlung','AG Monatsbeitrag','AG Jahressonderzahlung','VWL Arbeitgeber','Zinsgewinne'];
   const clrs=keys.map(col);
-  if (charts.doughnut) charts.doughnut.destroy();
-  charts.doughnut = new Chart(document.getElementById('chartDoughnut'),{
-    type:'doughnut',
-    data:{labels:lbls,datasets:[{data:vals,backgroundColor:clrs,borderWidth:2,borderColor:'transparent'}]},
-    options:{responsive:true,maintainAspectRatio:false,
-      plugins:{legend:{display:false},tooltip:{callbacks:{label:ctx=>' '+fmt(ctx.raw)+' ('+pct(ctx.raw/last.total)+')'}}}
-    }
-  });
-  document.getElementById('split-details').innerHTML=lbls.map((l,i)=>`
-    <div style="display:flex;align-items:center;justify-content:space-between;padding:8px 0;border-bottom:1px solid var(--border);font-size:13px">
-      <span style="display:flex;align-items:center;gap:8px"><span class="legend-dot" style="background:${clrs[i]}"></span>${l}</span>
-      <span><span style="font-weight:500">${fmt(vals[i])}</span><span style="color:var(--text3);margin-left:6px">${pct(vals[i]/last.total)}</span></span>
-    </div>`).join('');
+  if(charts.doughnut)charts.doughnut.destroy();
+  charts.doughnut=new Chart(document.getElementById('chartDoughnut'),{type:'doughnut',data:{labels:lbls,datasets:[{data:vals,backgroundColor:clrs,borderWidth:2,borderColor:'transparent'}]},options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false},tooltip:{callbacks:{label:ctx=>' '+fmt(ctx.raw)+' ('+pct(ctx.raw/last.total)+')'}}}}}); 
+  document.getElementById('split-details').innerHTML=lbls.map((l,i)=>`<div style="display:flex;align-items:center;justify-content:space-between;padding:8px 0;border-bottom:1px solid var(--border);font-size:13px"><span style="display:flex;align-items:center;gap:8px"><span class="ldot" style="background:${clrs[i]}"></span>${l}</span><span><span style="font-weight:500">${fmt(vals[i])}</span><span style="color:var(--text3);margin-left:6px">${pct(vals[i]/last.total)}</span></span></div>`).join('');
+
+  // Jahrestabelle
+  const nettoJahr=(mr2-ersparnis)*12+sz2+vwlAN2*12;
+  document.getElementById('table-body').innerHTML=rows.map(r=>`<tr><td><strong>${r.j}</strong></td><td>${fmt(r.total)}</td><td>${fmt(r.einzEigen)}</td><td>${fmt(r.einzAG)}</td><td style="color:var(--green)">${fmt(r.zins)}</td><td><span class="pill ${r.zins/(r.einzEigen+r.einzAG)>.5?'pg':'pb'}">${pct(r.zins/Math.max(r.einzEigen+r.einzAG,1))}</span></td><td style="color:var(--accent);font-weight:500">${fmt(nettoJahr*r.j)}</td></tr>`).join('');
+
+  // Auszahlungsphase
+  const azRendite=parseFloat(document.getElementById('bav-az-rendite').value);
+  const azJahre=parseInt(document.getElementById('bav-az-jahre').value);
+  const azBetrag=parseFloat(document.getElementById('bav-az-betrag').value)||0;
+  const az=calcAuszahlung(last.total,azRendite,bavMode,azJahre,azBetrag);
+  renderAuszahlung('bav-',last.total,az);
 }
 
-function buildTable(rows) {
-  const s = calcSteuer();
-  const mr2    = parseFloat(document.getElementById('monatsrate').value)||0;
-  const sz2    = parseFloat(document.getElementById('sonderzahlung').value)||0;
-  const vwlAN2 = parseFloat(document.getElementById('vwl-an').value)||0;
-  const entgelt = document.getElementById('entgelt').checked;
-  const entgeltErsparnis = entgelt ? mr2 * s.gstGesamt : 0;
-  const nettoJahr = (mr2 - entgeltErsparnis)*12 + sz2 + vwlAN2*12;
-
-  const max = rows[rows.length-1].total;
-  document.getElementById('table-body').innerHTML=rows.map(r=>`
-    <tr>
-      <td><strong>${r.j}</strong></td>
-      <td>${fmt(r.total)}</td>
-      <td>${fmt(r.einzEigen)}</td>
-      <td>${fmt(r.einzAG)}</td>
-      <td style="color:var(--green)">${fmt(r.zins)}</td>
-      <td><span class="pill ${r.zins/(r.einzEigen+r.einzAG)>.5?'pill-green':'pill-blue'}">${pct(r.zins/Math.max(r.einzEigen+r.einzAG,1))}</span></td>
-      <td style="color:var(--accent);font-weight:500">${fmt(nettoJahr*r.j)}</td>
-    </tr>`).join('');
+// ── Depot ────────────────────────────────────────────────
+function updateDepot(){
+  const sk=parseFloat(document.getElementById('dep-start').value)||0;
+  const mr=parseFloat(document.getElementById('dep-rate').value)||0;
+  const sz=parseFloat(document.getElementById('dep-sonder').value)||0;
+  const jahre=parseInt(document.getElementById('dep-laufzeit').value);
+  const rm=(parseFloat(document.getElementById('dep-rendite').value)/100)/12;
+  const r=parseFloat(document.getElementById('dep-rendite').value);
+  const azR=parseFloat(document.getElementById('dep-az-rendite').value);
+  const azJ=parseInt(document.getElementById('dep-az-jahre').value);
+  const azB=parseFloat(document.getElementById('dep-az-betrag').value)||0;
+  document.getElementById('dep-laufzeit-out').textContent=jahre+' Jahr'+(jahre==1?'':'e');
+  document.getElementById('dep-rendite-out').textContent=r.toFixed(1).replace('.',',')+' %';
+  document.getElementById('dep-az-rendite-out').textContent=azR.toFixed(1).replace('.',',')+' %';
+  document.getElementById('dep-az-jahre-out').textContent=azJ+' Jahre';
+  const dEinz=[],dGewinn=[];
+  for(let j=1;j<=jahre;j++){
+    const n=j*12;
+    const wStart=rm===0?sk:sk*Math.pow(1+rm,n);
+    const wMr=rm===0?mr*n:mr*(Math.pow(1+rm,n)-1)/rm;
+    let wSz=0;
+    for(let y=1;y<=j;y++)wSz+=sz*(rm===0?1:Math.pow(1+rm,(j-y)*12));
+    const einz=sk+mr*n+sz*j;
+    dEinz.push(Math.round(einz));
+    dGewinn.push(Math.round(wStart+wMr+wSz-einz));
+  }
+  const tE=dEinz[dEinz.length-1],tG=dGewinn[dGewinn.length-1];
+  const tEnd=tE+Math.max(0,tG),tNetto=tEnd-Math.max(0,tG)*0.26375;
+  document.getElementById('dep-m-end').textContent=fmt(tEnd);
+  document.getElementById('dep-m-faktor').textContent='Faktor '+((tEnd/Math.max(tE,1)).toFixed(2).replace('.',','))+'x';
+  document.getElementById('dep-m-gewinn').textContent=fmt(tG);
+  document.getElementById('dep-m-gewinn-pct').textContent=pct(tG/tEnd)+' des Endvermögens';
+  document.getElementById('dep-m-einz').textContent=fmt(tE);
+  document.getElementById('dep-m-einz-pct').textContent=pct(tE/tEnd)+' des Endvermögens';
+  document.getElementById('dep-m-netto').textContent=fmt(tNetto);
+  const dark=isDark();
+  const gc=dark?'rgba(255,255,255,0.07)':'rgba(0,0,0,0.07)';
+  const tc=dark?'#888':'#999';
+  const labels=dEinz.map((_,i)=>i===0?'1 J.':(i+1)+' J.');
+  if(charts.depot)charts.depot.destroy();
+  charts.depot=new Chart(document.getElementById('depotChart'),{type:'bar',data:{labels,datasets:[{label:'Einzahlungen',data:dEinz,backgroundColor:dark?'#185FA5':'#85B7EB',stack:'s'},{label:'Kursgewinne',data:dGewinn,backgroundColor:dark?'#0F6E56':'#5DCAA5',stack:'s'}]},options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false},tooltip:{callbacks:{label:ctx=>' '+fmt(ctx.raw)}}},scales:{x:{stacked:true,ticks:{color:tc,font:{size:11},maxRotation:45,autoSkip:true,maxTicksLimit:12},grid:{color:gc}},y:{stacked:true,ticks:{color:tc,font:{size:11},callback:v=>fmt(v)},grid:{color:gc}}}}});
+  document.getElementById('dep-table-body').innerHTML=dEinz.map((e,i)=>{const g=dGewinn[i],tot=e+Math.max(0,g),net=tot-Math.max(0,g)*0.26375;return`<tr><td><strong>${i+1}</strong></td><td>${fmt(tot)}</td><td>${fmt(e)}</td><td style="color:var(--green)">${fmt(g)}</td><td><span class="pill ${g/e>.5?'pg':'pb'}">${pct(g/Math.max(e,1))}</span></td><td style="color:var(--accent);font-weight:500">${fmt(net)}</td></tr>`;}).join('');
+  const az=calcAuszahlung(tNetto,azR,depMode,azJ,azB);
+  renderAuszahlung('dep-',tNetto,az);
 }
 
-function switchTab(name, btn) {
-  ['chart','split','table','steuer'].forEach(t=>{
-    document.getElementById('tab-'+t).style.display=t===name?'block':'none';
-  });
-  document.querySelectorAll('.tab').forEach(b=>b.classList.remove('active'));
+// ── Modi & Navigation ────────────────────────────────────
+function setBavMode(m){
+  bavMode=m;
+  document.getElementById('bav-mode-laufzeit').classList.toggle('active',m==='laufzeit');
+  document.getElementById('bav-mode-entnahme').classList.toggle('active',m==='entnahme');
+  document.getElementById('bav-az-laufzeit').style.display=m==='laufzeit'?'block':'none';
+  document.getElementById('bav-az-entnahme').style.display=m==='entnahme'?'block':'none';
+  updateBAV();
+}
+function setDepMode(m){
+  depMode=m;
+  document.getElementById('dep-mode-laufzeit').classList.toggle('active',m==='laufzeit');
+  document.getElementById('dep-mode-entnahme').classList.toggle('active',m==='entnahme');
+  document.getElementById('dep-az-laufzeit').style.display=m==='laufzeit'?'block':'none';
+  document.getElementById('dep-az-entnahme').style.display=m==='entnahme'?'block':'none';
+  updateDepot();
+}
+function switchPage(name){
+  document.getElementById('page-bav').style.display=name==='bav'?'grid':'none';
+  document.getElementById('page-depot').style.display=name==='depot'?'block':'none';
+  document.getElementById('bav-fonds-info').style.display=name==='bav'?'block':'none';
+  document.getElementById('pt-bav').classList.toggle('active',name==='bav');
+  document.getElementById('pt-depot').classList.toggle('active',name==='depot');
+  if(name==='depot')updateDepot();
+}
+function switchTab(page,name,btn){
+  const prefix=page==='bav'?'bav':'dep';
+  const tabs=page==='bav'?['chart','split','auszahlung','table','steuer']:['anspar','auszahlung','table'];
+  tabs.forEach(t=>document.getElementById(prefix+'-tab-'+t).style.display=t===name?'block':'none');
+  btn.closest('.tabs').querySelectorAll('.tab').forEach(b=>b.classList.remove('active'));
   btn.classList.add('active');
 }
 
+// ── Events ───────────────────────────────────────────────
 ['startkapital','monatsrate','sonderzahlung','ag-monat','ag-jahr','vwl-ag','laufzeit','rendite',
- 'st-brutto','st-alter','st-kv-zusatz','st-freibetrag'].forEach(id=>{
-  document.getElementById(id).addEventListener('input', update);
+ 'bav-az-jahre','bav-az-rendite','bav-az-betrag',
+ 'st-brutto','st-alter','st-kv-zusatz','st-freibetrag'].forEach(id=>document.getElementById(id).addEventListener('input',updateBAV));
+['st-klasse','st-kinder','st-bundesland','st-kv'].forEach(id=>document.getElementById(id).addEventListener('change',updateBAV));
+['st-kirche','st-kinderlos','entgelt'].forEach(id=>document.getElementById(id).addEventListener('change',updateBAV));
+document.getElementById('monatsrate').addEventListener('input',()=>{
+  const mr=parseFloat(document.getElementById('monatsrate').value)||0;
+  document.getElementById('ag-monat').value=Math.round(mr*0.3);
 });
-['st-klasse','st-kinder','st-bundesland','st-kv'].forEach(id=>{
-  document.getElementById(id).addEventListener('change', update);
-});
-['st-kirche','st-kinderlos','entgelt'].forEach(id=>{
-  document.getElementById(id).addEventListener('change', update);
-});
+['dep-start','dep-rate','dep-sonder','dep-laufzeit','dep-rendite','dep-az-jahre','dep-az-rendite','dep-az-betrag'].forEach(id=>document.getElementById(id).addEventListener('input',updateDepot));
 
-document.getElementById('monatsrate').addEventListener('input', () => {
-  const mr = parseFloat(document.getElementById('monatsrate').value)||0;
-  document.getElementById('ag-monat').value = Math.round(mr*0.3);
-});
-
-update();
+updateBAV();
+updateDepot();
 </script>
 </body>
 </html>
