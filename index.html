@@ -32,7 +32,7 @@
   body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;background:var(--bg);color:var(--text);min-height:100vh;font-size:15px;line-height:1.6}
   header{background:var(--surface);border-bottom:1px solid var(--border);padding:18px 32px;display:flex;align-items:center;gap:12px}
   header h1{font-size:20px;font-weight:500}
-  header span{font-size:13px;color:var(--accent);background:var(--accent-light);padding:3px 10px;border-radius:20px}
+  header span.badge{font-size:13px;color:var(--accent);background:var(--accent-light);padding:3px 10px;border-radius:20px;margin-left:auto}
   .layout{display:grid;grid-template-columns:340px 1fr;min-height:calc(100vh - 61px)}
   .sidebar{background:var(--surface);border-right:1px solid var(--border);padding:24px;overflow-y:auto}
   .main{padding:24px;overflow-y:auto}
@@ -43,7 +43,6 @@
   .field input[type=number],.field select{width:100%;padding:8px 12px;border:1px solid var(--border2);border-radius:var(--radius-sm);background:var(--surface);color:var(--text);font-size:14px;outline:none;transition:border .15s}
   .field input[type=number]:focus,.field select:focus{border-color:var(--accent)}
   .field-row{display:grid;grid-template-columns:1fr 1fr;gap:10px}
-  .field-row3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:10px}
   .slider-field{margin-bottom:14px}
   .slider-field .slider-head{display:flex;justify-content:space-between;align-items:center;margin-bottom:5px}
   .slider-field .slider-head label{font-size:13px;color:var(--text2)}
@@ -83,17 +82,12 @@
   td{padding:9px 12px;border-bottom:1px solid var(--border);color:var(--text)}
   tr:last-child td{border-bottom:none}
   tr:hover td{background:var(--surface2)}
-  .bar-mini{height:6px;border-radius:3px;background:var(--accent);display:inline-block;vertical-align:middle;margin-left:6px}
   .pill{display:inline-block;padding:2px 8px;border-radius:20px;font-size:11px;font-weight:500}
   .pill-green{background:var(--green-light);color:var(--green)}
   .pill-blue{background:var(--blue-light);color:var(--blue)}
-  .steuer-grid{display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-bottom:20px}
-  .steuer-result{background:var(--surface2);border-radius:var(--radius);padding:20px;margin-top:4px}
   .steuer-result-row{display:flex;justify-content:space-between;align-items:center;padding:8px 0;border-bottom:1px solid var(--border);font-size:14px}
   .steuer-result-row:last-child{border-bottom:none;font-weight:500;font-size:15px;padding-top:12px}
-  .steuer-result-row span:last-child{font-weight:500;color:var(--text)}
   .steuer-result-row.total span:last-child{color:var(--accent);font-size:16px}
-  .info-box{background:var(--blue-light);border:1px solid var(--blue);border-radius:var(--radius-sm);padding:12px 14px;font-size:13px;color:var(--text);margin-bottom:20px;line-height:1.5}
   @media(max-width:768px){
     .layout{grid-template-columns:1fr}
     .sidebar{border-right:none;border-bottom:1px solid var(--border)}
@@ -105,25 +99,32 @@
 
 <header>
   <svg width="22" height="22" viewBox="0 0 22 22" fill="none"><rect x="2" y="12" width="4" height="8" rx="1.5" fill="var(--accent)"/><rect x="9" y="8" width="4" height="12" rx="1.5" fill="var(--green)"/><rect x="16" y="3" width="4" height="17" rx="1.5" fill="var(--amber)"/></svg>
-  <h1>Betriebliche Altersvorsorge Rechner</h1>
-  <span>Beta</span>
+  <div>
+    <h1>Betriebliche Altersvorsorge Rechner</h1>
+    <div style="font-size:12px;color:var(--text3);margin-top:2px">
+      Investmentfonds: <strong style="color:var(--text2)">Allianz Best Styles Global Equity SRI WT EUR</strong>
+      <span style="margin:0 6px">·</span>WKN <span style="color:var(--text2)">A2PN85</span>
+      <span style="margin:0 6px">·</span>ISIN <span style="color:var(--text2)">LU2034156138</span>
+      <span style="margin:0 6px">·</span>Globale Aktien, SRI/ESG-Strategie
+    </div>
+  </div>
+  <span class="badge">Beta</span>
 </header>
 
 <div class="layout">
   <aside class="sidebar">
-
     <div class="section">
       <div class="section-label">Grundparameter</div>
       <div class="field">
-        <label for="startkapital">Startkapital (€)</label>
+        <label>Startkapital (€)</label>
         <input type="number" id="startkapital" value="0" min="0" step="500">
       </div>
       <div class="slider-field">
-        <div class="slider-head"><label for="laufzeit">Anlagedauer</label><span id="laufzeit-out">38 Jahre</span></div>
+        <div class="slider-head"><label>Anlagedauer</label><span id="laufzeit-out">38 Jahre</span></div>
         <input type="range" id="laufzeit" min="1" max="50" value="38" step="1">
       </div>
       <div class="slider-field">
-        <div class="slider-head"><label for="rendite">Ø Rendite p.a.</label><span id="rendite-out">5,0 %</span></div>
+        <div class="slider-head"><label>Ø Rendite p.a.</label><span id="rendite-out">5,0 %</span></div>
         <input type="range" id="rendite" min="1" max="15" value="5" step="0.5">
       </div>
     </div>
@@ -141,10 +142,10 @@
         </div>
       </div>
       <div class="toggle-row" style="margin-top:-4px">
-        <label style="font-size:13px;color:var(--text2)">Entgeltumwandlung (vom Brutto)</label>
+        <label>Entgeltumwandlung (vom Brutto)</label>
         <label class="toggle"><input type="checkbox" id="entgelt" checked><span class="toggle-slider"></span></label>
       </div>
-      <div class="hint" id="entgelt-hint">Beitrag wird vom Brutto abgezogen → Steuer- & SV-Ersparnis wird berechnet</div>
+      <div class="hint">Beitrag wird vom Brutto abgezogen → Steuer- & SV-Ersparnis wird berechnet</div>
     </div>
 
     <div class="section">
@@ -171,14 +172,12 @@
         <span style="color:var(--text2)">Steuerl. Mehrkosten (auto)</span>
         <span id="vwl-an-display" style="font-weight:500;color:var(--accent)">– €</span>
       </div>
-      <div class="hint" style="margin-top:6px">Mehrkosten = VWL-AG × Grenzsteuersatz aus Steuerprofil</div>
       <input type="hidden" id="vwl-an" value="14">
+      <div class="hint" style="margin-top:6px">Mehrkosten = VWL-AG × Grenzsteuersatz aus Steuerprofil</div>
     </div>
-
   </aside>
 
   <main class="main">
-
     <div class="metrics">
       <div class="metric highlight">
         <div class="metric-label">Endvermögen gesamt</div>
@@ -243,27 +242,24 @@
       <button class="tab" onclick="switchTab('steuer',this)">Steuerprofil</button>
     </div>
 
-    <!-- CHART TAB -->
     <div id="tab-chart">
       <div class="card">
         <div class="card-title">Vermögensentwicklung über die Zeit</div>
-        <div class="chart-wrap"><canvas id="chartGrowth" role="img" aria-label="Gestapeltes Balkendiagramm der Vermögensentwicklung"></canvas></div>
+        <div class="chart-wrap"><canvas id="chartGrowth" role="img" aria-label="Vermögensentwicklung"></canvas></div>
         <div class="legend" id="legend-growth"></div>
       </div>
     </div>
 
-    <!-- SPLIT TAB -->
     <div id="tab-split" style="display:none">
       <div class="card">
         <div class="card-title">Zusammensetzung des Endvermögens</div>
         <div style="display:grid;grid-template-columns:1fr 1fr;gap:20px;align-items:center">
-          <div class="chart-wrap" style="height:260px"><canvas id="chartDoughnut" role="img" aria-label="Donut-Diagramm der Endvermögenszusammensetzung"></canvas></div>
+          <div class="chart-wrap" style="height:260px"><canvas id="chartDoughnut" role="img" aria-label="Endvermögenszusammensetzung"></canvas></div>
           <div id="split-details"></div>
         </div>
       </div>
     </div>
 
-    <!-- TABLE TAB -->
     <div id="tab-table" style="display:none">
       <div class="card">
         <div class="card-title">Jahresübersicht</div>
@@ -286,13 +282,13 @@
       </div>
     </div>
 
-    <!-- STEUER TAB -->
     <div id="tab-steuer" style="display:none">
-      <div class="info-box" id="steuer-infobox">Gib dein Steuerprofil ein – der Grenzsteuersatz wird automatisch berechnet und für die VWL-Mehrkosten verwendet.</div>
-
+      <div style="background:var(--blue-light);border:1px solid var(--blue);border-radius:var(--radius-sm);padding:12px 14px;font-size:13px;margin-bottom:20px;line-height:1.5" id="steuer-infobox">
+        Gib dein Steuerprofil ein – der Grenzsteuersatz wird automatisch berechnet und für die VWL-Mehrkosten verwendet.
+      </div>
       <div class="card">
         <div class="card-title">Persönliche Angaben</div>
-        <div class="steuer-grid">
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-bottom:20px">
           <div class="field">
             <label>Steuerklasse</label>
             <select id="st-klasse">
@@ -307,11 +303,11 @@
           <div class="field">
             <label>Bundesland</label>
             <select id="st-bundesland">
+              <option value="9" selected>Bremen (9%)</option>
               <option value="9">Baden-Württemberg (9%)</option>
               <option value="9">Bayern (9%)</option>
               <option value="9">Berlin (9%)</option>
               <option value="9">Brandenburg (9%)</option>
-              <option value="9" selected>Bremen (9%)</option>
               <option value="9">Hamburg (9%)</option>
               <option value="9">Hessen (9%)</option>
               <option value="9">Mecklenburg-Vorpommern (9%)</option>
@@ -319,7 +315,7 @@
               <option value="9">Nordrhein-Westfalen (9%)</option>
               <option value="9">Rheinland-Pfalz (9%)</option>
               <option value="9">Saarland (9%)</option>
-              <option value="8">Sachsen (9%)</option>
+              <option value="8">Sachsen (8%)</option>
               <option value="9">Sachsen-Anhalt (9%)</option>
               <option value="9">Schleswig-Holstein (9%)</option>
               <option value="9">Thüringen (9%)</option>
@@ -353,7 +349,6 @@
             </select>
           </div>
         </div>
-
         <div class="field-row">
           <div>
             <div class="toggle-row">
@@ -367,8 +362,8 @@
           </div>
           <div>
             <div class="field">
-              <label>Zusatzbeitrag KV (%) <span style="font-size:11px;color:var(--text3)">Standard ~1,7%</span></label>
-              <input type="number" id="st-kv-zusatz" value="1.7" min="0" max="5" step="0.1">
+              <label>Zusatzbeitrag KV (%) <span style="font-size:11px;color:var(--text3)">Standard ~2,59%</span></label>
+              <input type="number" id="st-kv-zusatz" value="2.59" min="0" max="5" step="0.01">
             </div>
             <div class="field">
               <label>Freibetrag / Jahr (€)</label>
@@ -377,13 +372,11 @@
           </div>
         </div>
       </div>
-
       <div class="card">
         <div class="card-title">Berechnetes Steuerprofil</div>
-        <div class="steuer-result" id="steuer-result"></div>
+        <div style="background:var(--surface2);border-radius:var(--radius);padding:20px" id="steuer-result"></div>
       </div>
     </div>
-
   </main>
 </div>
 
@@ -404,128 +397,109 @@ const C = {
 const col = k => isDark() ? C[k][1] : C[k][0];
 let charts = {};
 
-// ── Steuerberechnung (Näherung nach §32a EStG 2025) ──────────────────────────
-function calcESt(zvEJahr) {
-  if (zvEJahr <= 12096) return 0;
-  if (zvEJahr <= 17005) {
-    const y = (zvEJahr - 12096) / 10000;
-    return Math.floor((979.18 * y + 1400) * y);
-  }
-  if (zvEJahr <= 68480) {
-    const z = (zvEJahr - 17005) / 10000;
-    return Math.floor((192.59 * z + 2397) * z + 966);
-  }
-  if (zvEJahr <= 277825) return Math.floor(0.42 * zvEJahr - 10602);
-  return Math.floor(0.45 * zvEJahr - 18936);
+function calcESt(zvE) {
+  if (zvE <= 12096) return 0;
+  if (zvE <= 17005) { const y=(zvE-12096)/10000; return Math.floor((979.18*y+1400)*y); }
+  if (zvE <= 68480) { const z=(zvE-17005)/10000; return Math.floor((192.59*z+2397)*z+966); }
+  if (zvE <= 277825) return Math.floor(0.42*zvE-10602);
+  return Math.floor(0.45*zvE-18936);
 }
 
-function grenzsteuersatz(zvEJahr) {
-  const delta = 100;
-  return (calcESt(zvEJahr + delta) - calcESt(zvEJahr)) / delta;
+function grenzsteuersatz(zvE) {
+  return (calcESt(zvE+100) - calcESt(zvE)) / 100;
 }
 
 function calcSteuer() {
-  const brutto    = parseFloat(document.getElementById('st-brutto').value) || 0;
-  const alter     = parseInt(document.getElementById('st-alter').value) || 30;
-  const klasse    = parseInt(document.getElementById('st-klasse').value);
-  const kinder    = parseFloat(document.getElementById('st-kinder').value) || 0;
-  const kirche    = document.getElementById('st-kirche').checked;
-  const kinderlos = document.getElementById('st-kinderlos').checked;
-  const kvTyp     = document.getElementById('st-kv').value;
-  const kvZusatz  = parseFloat(document.getElementById('st-kv-zusatz').value) || 1.7;
-  const freibetrag= parseFloat(document.getElementById('st-freibetrag').value) || 0;
-  const kirchenPct= parseFloat(document.getElementById('st-bundesland').value) / 100;
+  const brutto     = parseFloat(document.getElementById('st-brutto').value)||0;
+  const alter      = parseInt(document.getElementById('st-alter').value)||28;
+  const klasse     = parseInt(document.getElementById('st-klasse').value);
+  const kinder     = parseFloat(document.getElementById('st-kinder').value)||0;
+  const kirche     = document.getElementById('st-kirche').checked;
+  const kinderlos  = document.getElementById('st-kinderlos').checked;
+  const kvTyp      = document.getElementById('st-kv').value;
+  const kvZusatz   = parseFloat(document.getElementById('st-kv-zusatz').value)||2.59;
+  const freibetrag = parseFloat(document.getElementById('st-freibetrag').value)||0;
+  const kirchenPct = parseFloat(document.getElementById('st-bundesland').value)/100;
 
-  const bruttoJahr = brutto * 12;
+  const bruttoJahr  = brutto * 12;
+  const kammer      = 6.30;
+  const kammerJahr  = kammer * 12;
 
-  // SV AN-Anteile 2025 (Beitragsbemessungsgrenzen vereinfacht ignoriert bei normalen Gehältern)
   const rvSatz = 0.093;
   const avSatz = 0.013;
-  const kvSatz = (kvTyp === 'gesetzlich') ? (0.073 + kvZusatz / 200) : 0;
+  const kvSatz = kvTyp === 'gesetzlich' ? (0.073 + kvZusatz/200) : 0;
   const pvSatz = (kinderlos && alter >= 23) ? 0.023 : 0.018;
 
   const rv = bruttoJahr * rvSatz;
   const av = bruttoJahr * avSatz;
   const kv = bruttoJahr * kvSatz;
   const pv = bruttoJahr * pvSatz;
-  const svGesamt = rv + av + kv + pv;
+  const svGesamt = rv + av + kv + pv + kammerJahr;
 
-  // Vorsorgepauschale (wird anstelle der tatsächlichen SV-Beiträge angesetzt, PAP-Methode)
-  // = AN-Anteil RV + min(AN-Anteil KV+PV, KV/PV-Höchstbetrag) — vereinfacht: volle AN-SV
+  const werbung  = 1230;
+  const kinderfb = kinder * 6672;
   const vorsorgepauschale = svGesamt;
 
-  // Werbungskostenpauschale 2025
-  const werbung = 1230;
-
-  // Kinderfreibetrag 2025: 6.672 € pro Kind (Existenzminimum + BEA zusammen)
-  const kinderfb = kinder * 6672;
-
-  // zvE
   let zvE = Math.max(0, bruttoJahr - vorsorgepauschale - werbung - kinderfb - freibetrag);
-
-  // Steuerklassen-Grundfreibetrag-Korrektur
-  // Klasse 1/4: 1× Grundfreibetrag (12.096) – bereits in §32a enthalten
-  // Klasse 3:   Splitting → effektiv doppelter Grundfreibetrag → zvE halbieren dann Steuer×2
-  // Klasse 2:   Entlastungsbetrag Alleinerziehende 4.260 €
   let splitting = false;
-  if (klasse === 3) { zvE = zvE / 2; splitting = true; }
+  if (klasse === 3) { zvE = zvE/2; splitting = true; }
   if (klasse === 2) zvE = Math.max(0, zvE - 4260);
 
   let est = calcESt(zvE);
   if (splitting) est = est * 2;
 
-  // Soli-Freigrenze 2025: 18.130 € ESt
   const soliFreigrenze = 18130;
-  const soli = est > soliFreigrenze ? est * 0.055 : 0;
-
+  const soli    = est > soliFreigrenze ? est * 0.055 : 0;
   const kircheSt = kirche ? est * kirchenPct : 0;
   const steuernGesamt = est + soli + kircheSt;
+
   const nettoJahr  = bruttoJahr - svGesamt - steuernGesamt;
   const nettoMonat = nettoJahr / 12;
 
-  // Grenzsteuersatz auf zvE (vor Splitting-Rückrechnung)
-  const gst = splitting ? grenzsteuersatz(zvE) : grenzsteuersatz(zvE);
-  const soliAufschlag   = est > soliFreigrenze ? 0.055 : 0;
+  const gst = grenzsteuersatz(splitting ? zvE : zvE);
+  const soliAufschlag    = est > soliFreigrenze ? 0.055 : 0;
   const kirchenAufschlag = kirche ? kirchenPct : 0;
   const gstGesamt = gst * (1 + soliAufschlag + kirchenAufschlag) + kvSatz + pvSatz + rvSatz + avSatz;
 
   return {
-    bruttoJahr, bruttoMonat: brutto,
-    zvE: splitting ? zvE * 2 : zvE,
-    est, soli, kircheSt,
-    steuernGesamt, svGesamt,
+    brutto, bruttoJahr,
+    kammer, kammerJahr,
     rv, av, kv, pv,
+    svGesamt, est, soli, kircheSt,
+    steuernGesamt,
     nettoJahr, nettoMonat,
     gst, gstGesamt,
-    kvSatz, pvSatz
+    kvSatz, pvSatz, kirchenPct,
+    zvE: splitting ? zvE*2 : zvE
   };
 }
 
 function updateSteuer() {
   const s = calcSteuer();
 
-  document.getElementById('m-grenz').textContent   = pct(s.gst);
+  document.getElementById('m-grenz').textContent    = pct(s.gst);
   document.getElementById('m-grenz-sub').textContent = 'Gesamt inkl. SV: '+pct(s.gstGesamt);
 
-  const vwlAG = parseFloat(document.getElementById('vwl-ag').value)||0;
+  const vwlAG   = parseFloat(document.getElementById('vwl-ag').value)||0;
   const vwlANval = Math.round(vwlAG * s.gstGesamt);
-  document.getElementById('vwl-an').value = vwlANval;
-  document.getElementById('vwl-an-display').textContent = vwlANval.toLocaleString('de-DE',{minimumFractionDigits:2,maximumFractionDigits:2})+' €';
+  document.getElementById('vwl-an').value           = vwlANval;
+  document.getElementById('vwl-an-display').textContent = fmtE(vwlANval);
 
-  // Info-Box
   document.getElementById('steuer-infobox').textContent =
     'Grenzsteuersatz '+pct(s.gst)+' (inkl. Sozialabgaben: '+pct(s.gstGesamt)+'). Die VWL-Mehrkosten wurden automatisch aktualisiert.';
 
-  // Ergebnistabelle
+  const soliFreigrenze = 18130;
+  const kvZusatz = parseFloat(document.getElementById('st-kv-zusatz').value)||2.59;
   const rows = [
-    ['Bruttogehalt / Monat',    fmtE(s.bruttoMonat), ''],
-    ['Lohnsteuer',              fmtE(s.est/12),       '§32a EStG'],
-    ['Solidaritätszuschlag',    fmtE(s.soli/12),      s.soli>0?'5,5%':'entfällt'],
-    ['Kirchensteuer',           fmtE(s.kircheSt/12),  s.kircheSt>0?pct(parseFloat(document.getElementById('st-bundesland').value)/100):'entfällt'],
-    ['Rentenversicherung (AN)', fmtE(s.rv/12),        pct(0.093)],
-    ['Arbeitslosenvers. (AN)',  fmtE(s.av/12),        pct(0.013)],
-    ['Krankenversicherung (AN)',fmtE(s.kv/12),        s.kvSatz>0?pct(s.kvSatz):'PKV'],
-    ['Pflegeversicherung (AN)', fmtE(s.pv/12),        pct(s.pvSatz)],
+    ['Bruttogehalt / Monat',            fmtE(s.brutto),          ''],
+    ['Lohnsteuer',                      fmtE(s.est/12),          '§32a EStG'],
+    ['Solidaritätszuschlag',            fmtE(s.soli/12),         s.soli>0?'5,5%':'entfällt'],
+    ['Kirchensteuer',                   fmtE(s.kircheSt/12),     s.kircheSt>0?pct(s.kirchenPct):'entfällt'],
+    ['Rentenversicherung (AN)',          fmtE(s.rv/12),           pct(0.093)],
+    ['Arbeitslosenversicherung (AN)',    fmtE(s.av/12),           pct(0.013)],
+    ['Handelskammer Bremen',            fmtE(s.kammer),          'fix 6,30 €/Monat'],
+    ['Krankenversicherung (AN)',         fmtE(s.kv/12),           s.kvSatz>0?pct(s.kvSatz):'PKV'],
+    ['Pflegeversicherung (AN)',          fmtE(s.pv/12),           pct(s.pvSatz)],
   ];
 
   document.getElementById('steuer-result').innerHTML =
@@ -538,19 +512,16 @@ function updateSteuer() {
         </span>
       </div>`).join('')+`
     <div class="steuer-result-row total">
-      <span>Netto / Monat</span>
-      <span>${fmtE(s.nettoMonat)}</span>
+      <span>Netto / Monat</span><span>${fmtE(s.nettoMonat)}</span>
     </div>`;
 }
 
-// ── Sparplan-Berechnung ───────────────────────────────────────────────────────
 function calcData() {
   const sk    = parseFloat(document.getElementById('startkapital').value)||0;
   const mr    = parseFloat(document.getElementById('monatsrate').value)||0;
   const sz    = parseFloat(document.getElementById('sonderzahlung').value)||0;
   const agM   = parseFloat(document.getElementById('ag-monat').value)||0;
   const agJ   = parseFloat(document.getElementById('ag-jahr').value)||0;
-  const vwlAN = parseFloat(document.getElementById('vwl-an').value)||0;
   const vwlAG = parseFloat(document.getElementById('vwl-ag').value)||0;
   const jahre = parseInt(document.getElementById('laufzeit').value);
   const rm    = (parseFloat(document.getElementById('rendite').value)/100)/12;
@@ -562,11 +533,10 @@ function calcData() {
     const wStart = sk*Math.pow(1+rm,n);
     const wMr    = grow(mr);
     const wAgM   = grow(agM);
-    const wVwlAN = grow(vwlAN);
     const wVwlAG = grow(vwlAG);
     let wSz=0, wAgJ=0;
     for (let y=1; y<=j; y++) {
-      const rem = (j-y)*12;
+      const rem=(j-y)*12;
       wSz  += sz  * Math.pow(1+rm,rem);
       wAgJ += agJ * Math.pow(1+rm,rem);
     }
@@ -592,6 +562,7 @@ function update() {
   document.getElementById('rendite-out').textContent  = r+' %';
 
   updateSteuer();
+  const s = calcSteuer();
 
   const rows = calcData();
   const last = rows[rows.length-1];
@@ -606,29 +577,20 @@ function update() {
   document.getElementById('m-ag').textContent        = fmt(last.einzAG);
   document.getElementById('m-ag-pct').textContent    = pct(last.einzAG/last.total)+' des Endvermögens';
 
-  const mr    = parseFloat(document.getElementById('monatsrate').value)||0;
-  const sz    = parseFloat(document.getElementById('sonderzahlung').value)||0;
-  const vwlAN = parseFloat(document.getElementById('vwl-an').value)||0;
-  const jahre = parseInt(document.getElementById('laufzeit').value);
-  const kostenMo  = mr + sz/12 + vwlAN;
-  const kostenGes = (mr + vwlAN)*12*jahre + sz*jahre;
-  document.getElementById('m-kosten').textContent    = fmt(kostenGes);
-  document.getElementById('m-kosten-sub').textContent= fmt(kostenMo)+' / Monat (Ø)';
-
-  // Gegenüberstellung
-  const fmtM = v => v.toLocaleString('de-DE',{minimumFractionDigits:2,maximumFractionDigits:2})+' €';
-  const agMonat  = parseFloat(document.getElementById('ag-monat').value)||0;
-  const agJahr2  = parseFloat(document.getElementById('ag-jahr').value)||0;
-  const vwlAG2   = parseFloat(document.getElementById('vwl-ag').value)||0;
-  const vwlAN2   = parseFloat(document.getElementById('vwl-an').value)||0;
-  const mr2      = parseFloat(document.getElementById('monatsrate').value)||0;
-  const sz2      = parseFloat(document.getElementById('sonderzahlung').value)||0;
-  const entgelt  = document.getElementById('entgelt').checked;
-
-  // Steuer+SV-Ersparnis durch Entgeltumwandlung
-  const s = calcSteuer();
+  const mr2    = parseFloat(document.getElementById('monatsrate').value)||0;
+  const sz2    = parseFloat(document.getElementById('sonderzahlung').value)||0;
+  const vwlAN2 = parseFloat(document.getElementById('vwl-an').value)||0;
+  const jahre  = parseInt(document.getElementById('laufzeit').value);
+  const entgelt = document.getElementById('entgelt').checked;
   const entgeltErsparnis = entgelt ? mr2 * s.gstGesamt : 0;
-  const nettoKosten = entgelt ? mr2 * (1 - s.gstGesamt) : mr2;
+  const kostenMo  = mr2 - entgeltErsparnis + sz2/12 + vwlAN2;
+  const kostenGes = (mr2 - entgeltErsparnis)*12*jahre + sz2*jahre + vwlAN2*12*jahre;
+  document.getElementById('m-kosten').textContent    = fmt(kostenGes);
+  document.getElementById('m-kosten-sub').textContent= fmtE(kostenMo)+' / Monat (Ø)';
+
+  const agMonat = parseFloat(document.getElementById('ag-monat').value)||0;
+  const agJahr2 = parseFloat(document.getElementById('ag-jahr').value)||0;
+  const vwlAG2  = parseFloat(document.getElementById('vwl-ag').value)||0;
 
   const kostenItems = [
     ['Eigene Monatsrate (brutto)',  entgelt ? mr2 : null],
@@ -636,29 +598,29 @@ function update() {
     ['Sonderzahlung (Ø/Monat)',    sz2/12 > 0 ? sz2/12 : null],
     ['VWL Steuermehrkosten',        vwlAN2 > 0 ? vwlAN2 : null],
     ['– Steuer- & SV-Ersparnis',   entgelt ? -entgeltErsparnis : null],
-  ].filter(r=>r[1]!==null);
-  const kostenSum = mr2 - (entgelt ? entgeltErsparnis : 0) + sz2/12 + vwlAN2;
+  ].filter(r => r[1] !== null);
+  const kostenSum = Math.max(0, kostenItems.reduce((a,r)=>a+r[1],0));
 
   const sparItems = [
-    ['Eigene Monatsrate',          mr2],
+    ['Eigene Monatsrate',          mr2 > 0 ? mr2 : null],
     ['Sonderzahlung (Ø/Monat)',   sz2/12 > 0 ? sz2/12 : null],
     ['AG Monatsbeitrag',           agMonat > 0 ? agMonat : null],
     ['AG Sonderzahlung (Ø/Monat)',agJahr2/12 > 0 ? agJahr2/12 : null],
     ['VWL Arbeitgeber',            vwlAG2 > 0 ? vwlAG2 : null],
-  ].filter(r=>r[1]!==null);
-  const sparSum = sparItems.reduce((s,r)=>s+r[1],0);
+  ].filter(r => r[1] !== null);
+  const sparSum = sparItems.reduce((a,r)=>a+r[1],0);
 
   const rowHtml = items => items.map(([l,v])=>`
     <div style="display:flex;justify-content:space-between;font-size:13px;padding:5px 0;border-bottom:1px solid var(--border)">
       <span style="color:${v<0?'var(--green)':'var(--text2)'}">${l}</span>
-      <span style="color:${v<0?'var(--green)':'var(--text)'}">${v<0?'- '+fmtM(-v):fmtM(v)}</span>
+      <span style="color:${v<0?'var(--green)':'var(--text)'}">${v<0?'- '+fmtE(-v):fmtE(v)}</span>
     </div>`).join('');
 
   document.getElementById('gg-kosten-rows').innerHTML = rowHtml(kostenItems);
-  document.getElementById('gg-kosten-total').textContent = fmtM(Math.max(0,kostenSum));
+  document.getElementById('gg-kosten-total').textContent = fmtE(kostenSum);
   document.getElementById('gg-spar-rows').innerHTML = rowHtml(sparItems);
-  document.getElementById('gg-spar-total').textContent = fmtM(sparSum);
-  document.getElementById('gg-netto').textContent = fmtM(Math.max(0,kostenSum))+' von mir, '+fmtM(sparSum)+' fließen ins Depot';
+  document.getElementById('gg-spar-total').textContent = fmtE(sparSum);
+  document.getElementById('gg-netto').textContent = fmtE(kostenSum)+' von mir, '+fmtE(sparSum)+' fließen ins Depot';
 
   buildGrowthChart(rows);
   buildDoughnut(last);
@@ -667,15 +629,14 @@ function update() {
 
 function buildGrowthChart(rows) {
   const labels = rows.map(r=>r.j===1?'1 J.':r.j+' J.');
-  const dark = isDark();
-  const gc = dark?'rgba(255,255,255,0.07)':'rgba(0,0,0,0.07)';
-  const tc = dark?'#888':'#999';
+  const gc = isDark()?'rgba(255,255,255,0.07)':'rgba(0,0,0,0.07)';
+  const tc = isDark()?'#888':'#999';
   const ds = [
     {label:'Eigene Monatsrate',      data:rows.map(r=>r.eigen),  backgroundColor:col('eigen'),  stack:'s'},
     {label:'Eigene Sonderzahlung',   data:rows.map(r=>r.sonder), backgroundColor:col('sonder'), stack:'s'},
     {label:'AG Monatsbeitrag',       data:rows.map(r=>r.ag),     backgroundColor:col('ag'),     stack:'s'},
     {label:'AG Jahressonderzahlung', data:rows.map(r=>r.agJ),    backgroundColor:col('agJ'),    stack:'s'},
-    {label:'VWL Arbeitgeber',         data:rows.map(r=>r.vwl),    backgroundColor:col('vwl'),    stack:'s'},
+    {label:'VWL Arbeitgeber',        data:rows.map(r=>r.vwl),    backgroundColor:col('vwl'),    stack:'s'},
     {label:'Zinsgewinne',            data:rows.map(r=>r.zins),   backgroundColor:col('zins'),   stack:'s'},
   ];
   if (charts.growth) charts.growth.destroy();
@@ -717,14 +678,14 @@ function buildDoughnut(last) {
 
 function buildTable(rows) {
   const s = calcSteuer();
-  const mr2   = parseFloat(document.getElementById('monatsrate').value)||0;
-  const sz2   = parseFloat(document.getElementById('sonderzahlung').value)||0;
-  const vwlAN2= parseFloat(document.getElementById('vwl-an').value)||0;
+  const mr2    = parseFloat(document.getElementById('monatsrate').value)||0;
+  const sz2    = parseFloat(document.getElementById('sonderzahlung').value)||0;
+  const vwlAN2 = parseFloat(document.getElementById('vwl-an').value)||0;
   const entgelt = document.getElementById('entgelt').checked;
   const entgeltErsparnis = entgelt ? mr2 * s.gstGesamt : 0;
-  const nettoJahr = (mr2 - entgeltErsparnis) * 12 + sz2 + vwlAN2 * 12;
+  const nettoJahr = (mr2 - entgeltErsparnis)*12 + sz2 + vwlAN2*12;
 
-  const max=rows[rows.length-1].total;
+  const max = rows[rows.length-1].total;
   document.getElementById('table-body').innerHTML=rows.map(r=>`
     <tr>
       <td><strong>${r.j}</strong></td>
@@ -733,7 +694,7 @@ function buildTable(rows) {
       <td>${fmt(r.einzAG)}</td>
       <td style="color:var(--green)">${fmt(r.zins)}</td>
       <td><span class="pill ${r.zins/(r.einzEigen+r.einzAG)>.5?'pill-green':'pill-blue'}">${pct(r.zins/Math.max(r.einzEigen+r.einzAG,1))}</span></td>
-      <td style="color:var(--accent);font-weight:500">${fmt(nettoJahr * r.j)}</td>
+      <td style="color:var(--accent);font-weight:500">${fmt(nettoJahr*r.j)}</td>
     </tr>`).join('');
 }
 
@@ -745,24 +706,21 @@ function switchTab(name, btn) {
   btn.classList.add('active');
 }
 
-// Event Listeners
-['startkapital','monatsrate','sonderzahlung','ag-monat','ag-jahr','vwl-an','vwl-ag','laufzeit','rendite'].forEach(id=>{
+['startkapital','monatsrate','sonderzahlung','ag-monat','ag-jahr','vwl-ag','laufzeit','rendite',
+ 'st-brutto','st-alter','st-kv-zusatz','st-freibetrag'].forEach(id=>{
   document.getElementById(id).addEventListener('input', update);
 });
-
-['st-brutto','st-alter','st-klasse','st-kinder','st-bundesland','st-kv','st-kv-zusatz','st-freibetrag'].forEach(id=>{
-  document.getElementById(id).addEventListener('input', update);
+['st-klasse','st-kinder','st-bundesland','st-kv'].forEach(id=>{
+  document.getElementById(id).addEventListener('change', update);
 });
 ['st-kirche','st-kinderlos','entgelt'].forEach(id=>{
   document.getElementById(id).addEventListener('change', update);
 });
 
 document.getElementById('monatsrate').addEventListener('input', () => {
-  const mr=parseFloat(document.getElementById('monatsrate').value)||0;
-  document.getElementById('ag-monat').value=Math.round(mr*0.3);
+  const mr = parseFloat(document.getElementById('monatsrate').value)||0;
+  document.getElementById('ag-monat').value = Math.round(mr*0.3);
 });
-
-document.getElementById('vwl-ag').addEventListener('input', update);
 
 update();
 </script>
